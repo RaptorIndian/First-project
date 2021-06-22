@@ -98,6 +98,10 @@ def get_lvlup(growths):
 
 # Starting with the first option, different files for every characters
 
+directory = '.'
+characters_directory = directory + '/Characters/'
+gambling_hall_directory = "./Gambling Hall/ghall.txt"
+
 def get_growths1(name):
     """
     Obtaines the growths from a file on the computer within a designated folder
@@ -108,7 +112,7 @@ def get_growths1(name):
                  string if they are capped and thus need to be ignored.
     """
     # First need to open and read the file
-    filename="C:\\Users\\Raptor\\Desktop\\Discord Bot\\Characters\\"+name+".txt"
+    filename=characters_directory+name+".txt"
     full_file=[]
     try:
         with open(filename,'rb') as fid: # Will close the file after the information has been pulled
@@ -133,7 +137,7 @@ def overwrite_char(name,growths):
     """
     
     """
-    filename="C:\\Users\\Raptor\\Desktop\\Discord Bot\\Characters\\"+name+".txt"
+    filename=characters_directory+name+".txt"
 
     with open(filename,'r+') as fid:
         new_file=''
@@ -266,7 +270,7 @@ def NPC_RPS_calc(chance, skill, choice, name):
     leave_calc = np.random.randint(1,101,1)        
     if leave_calc <= chance_to_leave.get(name):
         result += ' ' + name + ' has left the gambling hall. '
-        filename='C:\\Users\\Raptor\\Desktop\\Discord Bot\\Gambling Hall\\ghall.txt'
+        filename=gambling_hall_directory
         with open(filename, 'wt') as fid:
             name = 'Nobody'
             fid.write(name)
@@ -402,7 +406,7 @@ async def on_message(message):
         if message.author.id in [234087004877357056, 335453916051275778]:
             authorized = True
             if authorized:
-                filename='C:\\Users\\Raptor\\Desktop\\Discord Bot\\Gambling Hall\\ghall.txt'
+                filename=gambling_hall_directory
                 with open(filename, 'wt') as fid:
                     name = list[1]
                     fid.write(name)
@@ -418,7 +422,7 @@ async def on_message(message):
         # if name == 'Nobody' or 'nobody':
         #     await message.channel.send('Nobody is in the gambling hall right now, come back later.')
         # else:
-        filename='C:\\Users\\Raptor\\Desktop\\Discord Bot\\Gambling Hall\\ghall.txt'
+        filename=gambling_hall_directory
         with open(filename, 'r+') as fid:
             for line in fid:
                 npc = line.split()
@@ -438,7 +442,7 @@ async def on_message(message):
             authorized = True
             if authorized:
                 name = str(list[1]).title()
-                path = 'C:\\Users\\Raptor\\Desktop\\Discord Bot\\Characters'
+                path = characters_directory
                 new_file = os.path.join(path, name+".txt")
                 if os.path.isfile(new_file):
                     await message.channel.send(name+' already exists.')
