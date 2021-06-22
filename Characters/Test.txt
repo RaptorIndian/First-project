@@ -1,0 +1,12 @@
+hp 21
+str 7
+mag 5
+skl 6
+spd 8
+lck 2
+def 4
+res 4
+con 5
+cha 1
+int 5
+inv 5

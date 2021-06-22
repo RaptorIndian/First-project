@@ -1,0 +1,12 @@
+hp 55
+str 55
+mag 65
+skl 55
+spd 5
+lck 55
+def 60
+res 55
+con 15
+cha 5
+int 5
+inv 5
