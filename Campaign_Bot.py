@@ -6,7 +6,6 @@
 
 # Import standard libraries
 import numpy as np #numpy is great since it has a variety of function
-import numpy.typing as npt
 import time
 import discord
 import os
