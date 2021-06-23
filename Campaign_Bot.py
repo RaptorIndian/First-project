@@ -9,6 +9,7 @@ import numpy as np #numpy is great since it has a variety of function
 import time
 import discord
 import os
+import itertools, random
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -211,6 +212,39 @@ chance_to_leave = {
 'Cloe': 20, 'Gron': 15, 'Joey': 5,
 'Keith': 10, 'Xavier': 1, 'Nobody': 0
 }
+
+
+def card_game(name):
+    # make a deck of cards
+    deck = list(itertools.product(range(1,14)))
+
+    # shuffle the cards
+    shuffle_amount = np.random.randint(1,51,1)
+    count = 0
+    while count < shuffle_amount:
+        random.shuffle(deck)
+        count +=1
+
+    # draw five cards for the player
+    player_hand = ("**You got:** \n")
+    for i in range(6):
+        player_hand += f'{(deck[i][0])} \n'
+
+    # shuffle the cards
+    shuffle_amount = np.random.randint(1,51,1)
+    count = 0
+    while count < shuffle_amount:
+        random.shuffle(deck)
+        count +=1
+
+    # draw five cards for the npc
+    npc_hand = (f"**{name} got:** \n")
+    for i in range(6):
+        npc_hand += str(f'{(deck[i][0])} \n')
+        results = player_hand + npc_hand
+    
+    return results
+
 
 
 def RPS_loss(choice):
@@ -455,6 +489,17 @@ async def on_message(message):
                         growths[item] = [0]
                     overwrite_char(name, growths)
                     await message.channel.send(name+' has been created.')
+    if message.content.startswith('$cards'):
+        filename=gambling_hall_directory
+        with open(filename, 'r+') as fid:
+            for line in fid:
+                npc = line.split()
+            name = npc[0]
+        if name == 'Nobody':
+            await message.channel.send("There's nobody in the gambling hall.")
+        else:
+            result = card_game(name)
+            await message.channel.send(result)
     
     if message.content.startswith('$test '):
         print(localtime_call)
