@@ -1,6 +1,6 @@
 hp 5
 str 5
-mag 105
+mag 115
 skl 25
 spd 25
 lck 105
