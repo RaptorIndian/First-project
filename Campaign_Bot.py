@@ -10,6 +10,7 @@ import time
 import discord
 import os
 import itertools, random
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -203,49 +204,101 @@ gambling_hall_skill = {
 'Clyde': 0, 'Dale': 0,
 'Alura': 1, 'Jordan': 1, 'Micka': 1,
 'Cloe': 2, 'Gron': 2, 'Joey': 2,
-'Keith': 3, 'Xavier': 3, 'Nobody': 0
+'Keith': 3, 'Xavier': 3, 'Myra': 3, 'Nobody': 0
 }
 
 chance_to_leave = {
 'Clyde': 5, 'Dale': 20,
 'Alura': 5, 'Jordan': 20, 'Micka': 15,
 'Cloe': 20, 'Gron': 15, 'Joey': 5,
-'Keith': 10, 'Xavier': 1, 'Nobody': 0
+'Keith': 10, 'Xavier': 1, 'Myra': 15, 'Nobody': 0
 }
 
 
+
+
+
 def card_game(name):
+
     # make a deck of cards
-    deck = list(itertools.product(range(1,14)))
+    deck = list(itertools.product(range(1,14),['Spades','Hearts','Diamonds','Clubs']))
+    if gambling_hall_skill[name] == 0:
 
-    # shuffle the cards
-    shuffle_amount = np.random.randint(1,51,1)
-    count = 0
-    while count < shuffle_amount:
-        random.shuffle(deck)
-        count +=1
+        # shuffle the cards
+        shuffle_amount = np.random.randint(1,51,1)
+        count = 0
+        while count < shuffle_amount:
+            random.shuffle(deck)
+            count += 1
 
-    # draw five cards for the player
-    player_hand = ("**You got:** \n")
-    for i in range(6):
-        player_hand += f'{(deck[i][0])} \n'
+        # draw five cards for the player
+        player_hand = []
+        for i in range(6):
+            player_hand += [deck[i]]
 
-    # shuffle the cards
-    shuffle_amount = np.random.randint(1,51,1)
-    count = 0
-    while count < shuffle_amount:
-        random.shuffle(deck)
-        count +=1
+        # shuffle the cards
+        shuffle_amount = np.random.randint(1,51,1)
+        count = 0
+        while count < shuffle_amount:
+            random.shuffle(deck)
+            count +=1
+        results = []
+        npc_hand = []
 
-    # draw five cards for the npc
-    npc_hand = (f"**{name} got:** \n")
-    for i in range(6):
-        npc_hand += str(f'{(deck[i][0])} \n')
-        results = player_hand + npc_hand
-    
-    return results
+        # draw five cards for the npc
+        for i in range(6):
+            npc_hand.append([deck[i][0], deck[i][1]])
+        print(npc_hand)
+        # choose a random number from the ordered list and subtract a random number
+        random_card_index = np.random.randint(1,7)
+        manip = npc_hand[random_card_index][0]
+        sub = np.random.randint(3,8,1)
+        sum = manip - sub[0]
+        stuff = np.random.randint(1,4)
+        sum = sum if sum > 0 else stuff
+        npc_hand[random_card_index][0] = sum
 
+        # format the list into a single string
+        def format(var0, var1, var2, var3, var4, var5):
+            return f'{var0}, {var1}, {var2}, {var3}, {var4}, and a {var5}'
+        results = (f"**You got:** {format(*player_hand)}\n**{name} got:** {format(*npc_hand)}")
+        return results
+        
+    if gambling_hall_skill[name] == 1:
 
+        # shuffle the cards
+        shuffle_amount = np.random.randint(1,51,1)
+        count = 0
+        while count < shuffle_amount:
+            random.shuffle(deck)
+            count += 1
+
+        # draw five cards for the player
+        player_hand = []
+        for i in range(6):
+            player_hand += [deck[i]]
+
+        # shuffle the cards
+        shuffle_amount = np.random.randint(1,51,1)
+        count = 0
+        while count < shuffle_amount:
+            random.shuffle(deck)
+            count +=1
+        npc_hand = (f"**{name} got:** \n")
+        results = []
+        npc_hand = []
+
+        # draw five cards for the npc
+        for i in range(6):
+            npc_hand += [deck[i]]
+
+        # format the list into a single string
+        def format(var0, var1, var2, var3, var4, var5):
+            return f'{var0}, {var1}, {var2}, {var3}, {var4}, and a {var5}'
+        results = (f"**You got:** {format(*player_hand)}\n**{name} got:** {format(*npc_hand)}")
+        return results
+
+print(card_game('Clyde'))
 
 def RPS_loss(choice):
     if choice == 'rock':
@@ -276,10 +329,12 @@ def RPS_tie(choice):
 
 def NPC_RPS_calc(chance, skill, choice, name):
     if skill == 0:
-        if chance == 1:
+        if chance <= 25:
             result = str(name+' chose '+RPS_loss(choice)+'. You lose.')
-        elif chance == 2:
+        elif chance > 25 and chance <= 60:
             result = str(name+' chose '+RPS_win(choice)+'. You win!')
+        elif chance > 60:
+            result = str(name+' chose '+RPS_tie(choice)+'. You tied!')
     if skill == 1:
         if chance <= 33:
             result = str(name+' chose '+RPS_loss(choice)+'. You lose.')
@@ -314,11 +369,11 @@ def RPS_game(name, choice):
     skill = gambling_hall_skill[name]
     if name == 'Xavier':
         cheating = np.random.randint(1,101,1)
-        if cheating <= 10:
+        if cheating <= 7:
             result = 'You caught Xavier cheating! He forfeits all his money for getting caught.'
             return result
     if skill == 0:
-        chance = np.random.randint(1,3,1)
+        chance = np.random.randint(1,101,1)
         result = NPC_RPS_calc(chance, skill, choice, name)
         return result
     if skill == 1:
