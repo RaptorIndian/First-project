@@ -216,24 +216,13 @@ chance_to_leave = {
 
 
 
-# Create a deck of cards.
-# Deal 5 cards to the User
-# Deal 5 cards to the NPC
 
 # Manipulate the cards that the NPC recieves:
-    # EASY: Less likely to get high numbers, less likley to get duplicate numbers.
-    # NORMAL: Normal RNG
-    # HARD: 
-    # INSANE: 
+    # EASY: Less likely to get high numbers, less likley to get duplicate numbers, less likely to get straights.
+    # NORMAL: Normal RNG.
+    # HARD: More likely to get high numbers.
+    # INSANE: More likely to get high numbers, duplicate numbers, and straights.
     
-# Possible solution for EASY
-    # Create a deck
-    # How to deal
-        # Peek top card
-        # if below a certain value (like 9) then deal, otherwise shuffle.
-        # if equal to any card in hand shuffle deck.
-        # Add a chance that a duplicate number will stay duplicate
-        # Repeat
 
 
 
@@ -246,27 +235,29 @@ def shuffle(deck):
         count += 1
 
 
-# Makes pairs impossible
+# Makes sure you can't get multiple of the same card.
 def exists_in_hand(hand, new_card):
     for old_card in hand:
         if old_card[0] == new_card[0] and old_card[1] == new_card[1]:
             return True
     return False
 
+# Makes card number pairs only able to happen once.
 def has_pairs(hand, new_card):
     for old_card in hand:
         if old_card[0] == new_card[0]:
             return True
     return False
 
+# Lowers the likelihood of getting a straight.
 def has_straight(hand, new_card):
     for old_card in hand:
         if old_card[0] == new_card[0] + 1 or old_card[0] == new_card[0] - 1:
             return True
     return False
 
-
-def deal(deck):
+# Creates the NPC's deck.
+def deal0(deck):
     hand = []
     count = 0
     count2 = 0
@@ -297,8 +288,52 @@ def deal(deck):
                 continue
 
         hand.append(card)
+        shuffle(deck)
     return hand
+
+def deal2(deck):
+    hand = []
+    count = 0
+    while len(hand) < 6:
+        card = deck[0]
+        if card[0] < 7 and count < 2:
+            count += 1
+            shuffle(deck)
+            continue
+    
+        hand.append(card)
+        shuffle(deck)
+    return hand
+
+def deal3(deck):
+    hand = []
+    count = 0
+    count2 = 0
+    count3 = 0
+    while len(hand) < 6:
+        card = deck[0]
+        if card[0] <= 7 and count < 5:
+            count += 1
+            shuffle(deck)
+            continue
+            
+        if not has_pairs(hand, card) and count2 <2:
+            count2 += 1
+            shuffle(deck)
+            continue
         
+        if not has_straight(hand, card) and count3 <2:
+            count3 += 1
+            shuffle(deck)
+            continue
+
+
+    
+        hand.append(card)
+        shuffle(deck)
+    return hand
+
+
 
 def card_game(name):
 
@@ -327,13 +362,13 @@ def card_game(name):
             count +=1
         results = []
         npc_hand = []
-        npc_hand = deal(deck)
+        npc_hand = deal0(deck)
 
-        # format the list into a single string
-        def format(var0, var1, var2, var3, var4, var5):
-            return f'{var0}, {var1}, {var2}, {var3}, {var4}, and a {var5}'
-        results = (f"**You got:** {format(*player_hand)}\n**{name} got:** {format(*npc_hand)}")
-        return results
+        # # format the list into a single string
+        # def format(var0, var1, var2, var3, var4, var5):
+        #     return f'{var0}, {var1}, {var2}, {var3}, {var4}, and a {var5}'
+        # results = (f"**You got:** {format(*player_hand)}\n**{name} got:** {format(*npc_hand)}")
+        # return results
         
     if gambling_hall_skill[name] == 1:
 
@@ -363,13 +398,122 @@ def card_game(name):
         for i in range(6):
             npc_hand += [deck[i]]
 
-        # format the list into a single string
-        def format(var0, var1, var2, var3, var4, var5):
-            return f'{var0}, {var1}, {var2}, {var3}, {var4}, and a {var5}'
-        results = (f"**You got:** {format(*player_hand)}\n**{name} got:** {format(*npc_hand)}")
-        return results
+        # # format the list into a single string
+        # def format(var0, var1, var2, var3, var4, var5):
+        #     return f'{var0}, {var1}, {var2}, {var3}, {var4}, and a {var5}'
+        # results = (f"**You got:** {format(*player_hand)}\n**{name} got:** {format(*npc_hand)}")
+        # return results
 
-print(card_game('Clyde'))
+    # Logic depending on the skill of the NPC skill
+    if gambling_hall_skill[name] == 2:
+
+        # shuffle the cards
+        shuffle_amount = np.random.randint(1,51,1)
+        count = 0
+        while count < shuffle_amount:
+            random.shuffle(deck)
+            count += 1
+
+        # draw five cards for the player
+        player_hand = []
+        for i in range(6):
+            player_hand += [deck[i]]
+
+        # shuffle the cards
+        shuffle_amount = np.random.randint(1,51,1)
+        count = 0
+        while count < shuffle_amount:
+            random.shuffle(deck)
+            count +=1
+        results = []
+        npc_hand = []
+        npc_hand = deal2(deck)
+
+        # format the list into a single string
+        # def format(var0, var1, var2, var3, var4, var5):
+        #     return f'{var0}, {var1}, {var2}, {var3}, {var4}, and a {var5}'
+        # results = (f"**You got:** {format(*player_hand)}\n**{name} got:** {format(*npc_hand)}")
+        # return results
+    
+    if gambling_hall_skill[name] == 3:
+
+        # shuffle the cards
+        shuffle_amount = np.random.randint(1,51,1)
+        count = 0
+        while count < shuffle_amount:
+            random.shuffle(deck)
+            count += 1
+
+        # draw five cards for the player
+        player_hand = []
+        for i in range(6):
+            player_hand += [deck[i]]
+
+        # shuffle the cards
+        shuffle_amount = np.random.randint(1,51,1)
+        count = 0
+        while count < shuffle_amount:
+            random.shuffle(deck)
+            count +=1
+        results = []
+        npc_hand = []
+        npc_hand = deal3(deck)
+
+    # Game logic
+    player_points = 0
+    npc_points = 0
+    # Sets the card numbers up to be checked.
+    pcard0 = player_hand[0][0]
+    pcard1 = player_hand[1][0]
+    pcard2 = player_hand[2][0]
+    pcard3 = player_hand[3][0]
+    pcard4 = player_hand[4][0]
+    pcard5 = player_hand[5][0]
+    # ph stands for player hand.
+    ph = [pcard0, pcard1, pcard2, pcard3, pcard4, pcard5]
+    ncard0 = npc_hand[0][0]
+    ncard1 = npc_hand[1][0]
+    ncard2 = npc_hand[2][0]
+    ncard3 = npc_hand[3][0]
+    ncard4 = npc_hand[4][0]
+    ncard5 = npc_hand[5][0]
+    nh = [ncard0, ncard1, ncard2, ncard3, ncard4, ncard5]
+        
+# Check each card to see if they are plus or minus one from one another, then distribute points.
+
+    if pcard0 == pcard1 - 1:
+        if pcard1 == pcard2 - 1:
+            if pcard2 == pcard3 - 1:
+                if pcard3 == pcard4:
+                    if pcard4 == pcard5 - 1:
+                        player_points += 11
+                else:
+                    player_points += 9
+            else:
+                player_points += 7
+        else: 
+            player_points += 5
+    if pcard0 == pcard1 + 1:
+        if pcard1 == pcard2:
+            if pcard2 == pcard3 + 1:
+                if pcard3 == pcard4 + 1:
+                    if pcard4 == pcard5 + 1:
+                        player_points += 11
+                else:
+                    player_points += 9
+            else:
+                player_points += 7
+        else: 
+            player_points += 5
+
+    print(player_points)
+    # format the list into a single string
+    def format(var0, var1, var2, var3, var4, var5):
+        return f'{var0}, {var1}, {var2}, {var3}, {var4}, and a {var5}'
+    results = (f"**You got:** {format(*player_hand)}\n**{name} got:** {format(*npc_hand)}")
+    return results
+
+print(card_game('Alura'))
 
 def RPS_loss(choice):
     if choice == 'rock':
