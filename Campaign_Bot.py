@@ -216,12 +216,95 @@ chance_to_leave = {
 
 
 
+# Create a deck of cards.
+# Deal 5 cards to the User
+# Deal 5 cards to the NPC
 
+# Manipulate the cards that the NPC recieves:
+    # EASY: Less likely to get high numbers, less likley to get duplicate numbers.
+    # NORMAL: Normal RNG
+    # HARD: 
+    # INSANE: 
+    
+# Possible solution for EASY
+    # Create a deck
+    # How to deal
+        # Peek top card
+        # if below a certain value (like 9) then deal, otherwise shuffle.
+        # if equal to any card in hand shuffle deck.
+        # Add a chance that a duplicate number will stay duplicate
+        # Repeat
+
+
+
+def shuffle(deck):
+    # shuffle the cards
+    shuffle_amount = np.random.randint(1,51,1)
+    count = 0
+    while count < shuffle_amount:
+        random.shuffle(deck)
+        count += 1
+
+
+# Makes pairs impossible
+def exists_in_hand(hand, new_card):
+    for old_card in hand:
+        if old_card[0] == new_card[0] and old_card[1] == new_card[1]:
+            return True
+    return False
+
+def has_pairs(hand, new_card):
+    for old_card in hand:
+        if old_card[0] == new_card[0]:
+            return True
+    return False
+
+def has_straight(hand, new_card):
+    for old_card in hand:
+        if old_card[0] == new_card[0] + 1 or old_card[0] == new_card[0] - 1:
+            return True
+    return False
+
+
+def deal(deck):
+    hand = []
+    count = 0
+    count2 = 0
+    count3 = 0
+    while len(hand) < 6:
+        card = deck[0]
+        if card[0] > 9:
+            if count3 < 3:
+                count3 += 1
+                shuffle(deck)
+                continue
+            
+        if exists_in_hand(hand, card):
+            shuffle(deck)
+            continue
+        
+        if has_pairs(hand, card):
+            if card[0] < 10 and count < 1:
+                    count += 1
+            else:
+                shuffle(deck)
+                continue
+        
+        if has_straight(hand, card):
+            if count2 < 3:
+                count2 += 1
+                shuffle(deck)
+                continue
+
+        hand.append(card)
+    return hand
+        
 
 def card_game(name):
 
     # make a deck of cards
     deck = list(itertools.product(range(1,14),['Spades','Hearts','Diamonds','Clubs']))
+    # Logic depending on the skill of the NPC skill
     if gambling_hall_skill[name] == 0:
 
         # shuffle the cards
@@ -244,19 +327,7 @@ def card_game(name):
             count +=1
         results = []
         npc_hand = []
-
-        # draw five cards for the npc
-        for i in range(6):
-            npc_hand.append([deck[i][0], deck[i][1]])
-        print(npc_hand)
-        # choose a random number from the ordered list and subtract a random number
-        random_card_index = np.random.randint(1,7)
-        manip = npc_hand[random_card_index][0]
-        sub = np.random.randint(3,8,1)
-        sum = manip - sub[0]
-        stuff = np.random.randint(1,4)
-        sum = sum if sum > 0 else stuff
-        npc_hand[random_card_index][0] = sum
+        npc_hand = deal(deck)
 
         # format the list into a single string
         def format(var0, var1, var2, var3, var4, var5):
@@ -562,11 +633,6 @@ async def on_message(message):
 
 
 
-# @client.command()
-# async def ping(ctx):
-#     admin = client.get_user(335453916051275778)
-#     await ctx.send(f"{admin.mention}")
-    
 
 
 
@@ -575,7 +641,8 @@ async def on_message(message):
 
 
 
-client.run(os.getenv('token'))
+
+#client.run(os.getenv('token'))
 
 
 # %%
