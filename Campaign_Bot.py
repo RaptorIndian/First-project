@@ -245,6 +245,7 @@ gambling_hall_skill = {
     "Xavier": 3,
     "Myra": 3,
     "Nobody": 0,
+    "nobody": 0
 }
 
 chance_to_leave = {
@@ -260,6 +261,7 @@ chance_to_leave = {
     "Xavier": 1,
     "Myra": 15,
     "Nobody": 0,
+    "nobody": 0
 }
 
 
@@ -344,7 +346,7 @@ def deal2(deck):
     count = 0
     while len(hand) < 6:
         card = deck[0]
-        if card[0] < 7 and count < 2:
+        if card[0] < 4 and count < 1:
             count += 1
             shuffle(deck)
             continue
@@ -359,19 +361,27 @@ def deal3(deck):
     count = 0
     count2 = 0
     count3 = 0
+    rndm = np.random.randint(1, 50, 1)
+    card = deck[0]
+    hand.append(card)
+    shuffle(deck)
     while len(hand) < 6:
         card = deck[0]
-        if card[0] <= 7 and count < 5:
+        if exists_in_hand(hand, card):
+            shuffle(deck)
+            continue
+
+        if card[0] < 8 and count < 23 and rndm <= 40:
             count += 1
             shuffle(deck)
             continue
 
-        if not has_pairs(hand, card) and count2 < 2:
+        if not has_pairs(hand, card) and count2 < 14 and rndm <= 40:
             count2 += 1
             shuffle(deck)
             continue
 
-        if not has_straight(hand, card) and count3 < 2:
+        if not has_straight(hand, card) and count3 < 31 and rndm > 40:
             count3 += 1
             shuffle(deck)
             continue
@@ -476,12 +486,6 @@ def card_game(name):
         npc_hand = []
         npc_hand = deal0(deck)
 
-        # # format the list into a single string
-        # def format(var0, var1, var2, var3, var4, var5):
-        #     return f'{var0}, {var1}, {var2}, {var3}, {var4}, and a {var5}'
-        # results = (f"**You got:** {format(*player_hand)}\n**{name} got:** {format(*npc_hand)}")
-        # return results
-
     if gambling_hall_skill[name] == 1:
 
         # shuffle the cards
@@ -510,12 +514,6 @@ def card_game(name):
         for i in range(6):
             npc_hand += [deck[i]]
 
-        # # format the list into a single string
-        # def format(var0, var1, var2, var3, var4, var5):
-        #     return f'{var0}, {var1}, {var2}, {var3}, {var4}, and a {var5}'
-        # results = (f"**You got:** {format(*player_hand)}\n**{name} got:** {format(*npc_hand)}")
-        # return results
-
     # Logic depending on the skill of the NPC skill
     if gambling_hall_skill[name] == 2:
 
@@ -540,12 +538,6 @@ def card_game(name):
         results = []
         npc_hand = []
         npc_hand = deal2(deck)
-
-        # format the list into a single string
-        # def format(var0, var1, var2, var3, var4, var5):
-        #     return f'{var0}, {var1}, {var2}, {var3}, {var4}, and a {var5}'
-        # results = (f"**You got:** {format(*player_hand)}\n**{name} got:** {format(*npc_hand)}")
-        # return results
 
     if gambling_hall_skill[name] == 3:
 
@@ -596,47 +588,23 @@ def card_game(name):
 
     player_points += count_points(ph)
     npc_points += count_points(nh)
-
-    # if pcard0 == pcard1 - 1:
-    #     if pcard1 == pcard2 - 1:
-    #         if pcard2 == pcard3 - 1:
-    #             if pcard3 == pcard4:
-    #                 if pcard4 == pcard5 - 1:
-    #                     player_points += 11
-    #             else:
-    #                 player_points += 9
-    #         else:
-    #             player_points += 7
-    #     else:
-    #         player_points += 5
-    # if pcard0 == pcard1 + 1:
-    #     if pcard1 == pcard2:
-    #         if pcard2 == pcard3 + 1:
-    #             if pcard3 == pcard4 + 1:
-    #                 if pcard4 == pcard5 + 1:
-    #                     player_points += 11
-    #             else:
-    #                 player_points += 9
-    #         else:
-    #             player_points += 7
-    #     else:
-    #         player_points += 5
-
-    print(f"Player got: {player_points}")
-    print(f"NPC got: {npc_points}")
+    if player_points > npc_points:
+        card_game_result = f"You win!"
+    elif npc_points > player_points:
+        card_game_result = f"{name} won!"
+    elif player_points == npc_points:
+        card_game_result = f"You tied!"
 
     # format the list into a single string
     def format(var0, var1, var2, var3, var4, var5):
-        return f"{var0}, {var1}, {var2}, {var3}, {var4}, and a {var5}"
+        return f"{format_card(var0)}, {format_card(var1)}, {format_card(var2)}, {format_card(var3)}, {format_card(var4)}, and a {format_card(var5)}"
 
-    results = (
-        f"**You got:** {format(*player_hand)}\n**{name} got:** {format(*npc_hand)}"
-    )
+    def format_card(card):
+        return f"{card[0]} of {card[1]}"
+    results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
     return results
 
-
-print(card_game("Alura"))
-
+print(card_game("Clyde"))
 
 def RPS_loss(choice):
     if choice == "rock":
@@ -896,7 +864,7 @@ async def on_message(message):
                 npc = line.split()
             name = npc[0]
         choice = list[1]
-        if name == "Nobody":
+        if name == "Nobody" or name == 'nobody':
             await message.channel.send("There's nobody in the gambling hall.")
         else:
             result = RPS_game(name, choice)
@@ -953,7 +921,7 @@ async def on_message(message):
         await message.channel.send(client.get_user(335453916051275778))
 
 
-# client.run(os.getenv('token'))
+#client.run(os.getenv('token'))
 
 
 # %%
