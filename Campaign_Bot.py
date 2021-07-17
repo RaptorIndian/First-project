@@ -360,6 +360,10 @@ def deal2(deck):
     count = 0
     while len(hand) < 6:
         card = deck[0]
+        if exists_in_hand(hand, card):
+            shuffle(deck)
+            continue
+        
         if card[0] < 4 and count < 1:
             count += 1
             shuffle(deck)
@@ -406,6 +410,24 @@ def deal3(deck):
             shuffle(deck)
             continue
 
+
+        hand.append(card)
+        shuffle(deck)
+    return hand
+
+def deal_kanan(deck):
+    hand = []
+    count = 0
+    while len(hand) < 6:
+        card = deck[0]
+        if exists_in_hand(hand, card):
+            shuffle(deck)
+            continue
+        
+        if card[0] < 4 and count < 3:
+            count += 1
+            shuffle(deck)
+            continue
 
         hand.append(card)
         shuffle(deck)
@@ -493,181 +515,352 @@ def count_points(hand) -> int:
     return total_score
 
 
-def card_game(name):
+def card_game(name, kanan_skill):
+    if kanan_skill == False:
+        if name == "Xavier":
+            cheating = np.random.randint(1, 101, 1)
+            if cheating <= 7:
+                result = "You caught Xavier cheating! He forfeits all his money for getting caught."
+                result += " " + name + " has left the gambling hall. "
+                filename = gambling_hall_directory
+                with open(filename, "wt") as fid:
+                    name = "Nobody"
+                    fid.write(name)
+                    return result
 
-    if name == "Xavier":
-        cheating = np.random.randint(1, 101, 1)
-        if cheating <= 7:
-            result = "You caught Xavier cheating! He forfeits all his money for getting caught."
-            return result
+        # make a deck of cards
+        deck = list(
+            itertools.product(range(1, 14), ["Spades", "Hearts", "Diamonds", "Clubs"])
+        )
+        # Logic depending on the skill of the NPC skill
+        if gambling_hall_skill[name] == 0:
 
-    # make a deck of cards
-    deck = list(
-        itertools.product(range(1, 14), ["Spades", "Hearts", "Diamonds", "Clubs"])
-    )
-    # Logic depending on the skill of the NPC skill
-    if gambling_hall_skill[name] == 0:
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
 
-        # shuffle the cards
-        shuffle_amount = np.random.randint(1, 51, 1)
-        count = 0
-        while count < shuffle_amount:
-            random.shuffle(deck)
-            count += 1
-
-        # draw five cards for the player
-        player_hand = []
-        for i in range(6):
-            player_hand += [deck[i]]
-        deck = deck [ 6 : -1 : 1 ]
-
-        # shuffle the cards
-        shuffle_amount = np.random.randint(1, 51, 1)
-        count = 0
-        while count < shuffle_amount:
-            random.shuffle(deck)
-            count += 1
-        results = []
-        npc_hand = []
-        npc_hand = deal0(deck)
-
-    if gambling_hall_skill[name] == 1:
-
-        # shuffle the cards
-        shuffle_amount = np.random.randint(1, 51, 1)
-        count = 0
-        while count < shuffle_amount:
-            random.shuffle(deck)
-            count += 1
-
-        # draw five cards for the player
-        player_hand = []
-        for i in range(6):
-            player_hand += [deck[i]]
+            # draw five cards for the player
+            player_hand = []
+            for i in range(6):
+                player_hand += [deck[i]]
             deck = deck [ 6 : -1 : 1 ]
 
-        # shuffle the cards
-        shuffle_amount = np.random.randint(1, 51, 1)
-        count = 0
-        while count < shuffle_amount:
-            random.shuffle(deck)
-            count += 1
-        npc_hand = f"**{name} got:** \n"
-        results = []
-        npc_hand = []
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            results = []
+            npc_hand = []
+            npc_hand = deal0(deck)
 
-        # draw five cards for the npc
-        for i in range(6):
-            npc_hand += [deck[i]]
+        if gambling_hall_skill[name] == 1:
 
-    # Logic depending on the skill of the NPC skill
-    if gambling_hall_skill[name] == 2:
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
 
-        # shuffle the cards
-        shuffle_amount = np.random.randint(1, 51, 1)
-        count = 0
-        while count < shuffle_amount:
-            random.shuffle(deck)
-            count += 1
+            # draw five cards for the player
+            player_hand = []
+            for i in range(6):
+                player_hand += [deck[i]]
+                deck = deck [ 6 : -1 : 1 ]
 
-        # draw five cards for the player
-        player_hand = []
-        for i in range(6):
-            player_hand += [deck[i]]
-        deck = deck [ 6 : -1 : 1 ]
-        # shuffle the cards
-        shuffle_amount = np.random.randint(1, 51, 1)
-        count = 0
-        while count < shuffle_amount:
-            random.shuffle(deck)
-            count += 1
-        results = []
-        npc_hand = []
-        npc_hand = deal2(deck)
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            npc_hand = f"**{name} got:** \n"
+            results = []
+            npc_hand = []
 
-    if gambling_hall_skill[name] == 3:
+            # draw five cards for the npc
+            for i in range(6):
+                npc_hand += [deck[i]]
 
-        # shuffle the cards
-        shuffle_amount = np.random.randint(1, 51, 1)
-        count = 0
-        while count < shuffle_amount:
-            random.shuffle(deck)
-            count += 1
+        # Logic depending on the skill of the NPC skill
+        if gambling_hall_skill[name] == 2:
 
-        # draw five cards for the player
-        player_hand = []
-        for i in range(6):
-            player_hand += [deck[i]]
-        deck = deck [ 6 : -1 : 1 ]
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
 
-        # shuffle the cards
-        shuffle_amount = np.random.randint(1, 51, 1)
-        count = 0
-        while count < shuffle_amount:
-            random.shuffle(deck)
-            count += 1
-        results = []
-        npc_hand = []
-        npc_hand = deal3(deck)
+            # draw five cards for the player
+            player_hand = []
+            for i in range(6):
+                player_hand += [deck[i]]
+            deck = deck [ 6 : -1 : 1 ]
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            results = []
+            npc_hand = []
+            npc_hand = deal2(deck)
 
-    # Game logic
-    player_points = 0
-    npc_points = 0
+        if gambling_hall_skill[name] == 3:
 
-    # Sets the card numbers up to be checked.
-    pcard0 = player_hand[0][0]
-    pcard1 = player_hand[1][0]
-    pcard2 = player_hand[2][0]
-    pcard3 = player_hand[3][0]
-    pcard4 = player_hand[4][0]
-    pcard5 = player_hand[5][0]
-    # ph stands for player hand.
-    ph = [pcard0, pcard1, pcard2, pcard3, pcard4, pcard5]
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
 
-    ncard0 = npc_hand[0][0]
-    ncard1 = npc_hand[1][0]
-    ncard2 = npc_hand[2][0]
-    ncard3 = npc_hand[3][0]
-    ncard4 = npc_hand[4][0]
-    ncard5 = npc_hand[5][0]
-    # nh stands for npc hand.
-    nh = [ncard0, ncard1, ncard2, ncard3, ncard4, ncard5]
+            # draw five cards for the player
+            player_hand = []
+            for i in range(6):
+                player_hand += [deck[i]]
+            deck = deck [ 6 : -1 : 1 ]
 
-    player_points += count_points(ph)
-    npc_points += count_points(nh)
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            results = []
+            npc_hand = []
+            npc_hand = deal3(deck)
 
-    if player_points > npc_points:
-        card_game_result = f"You win!"
-    elif npc_points > player_points:
-        card_game_result = f"{name} won!"
-    elif player_points == npc_points:
-        card_game_result = f"You tied!"
-    
-    leave_calc = np.random.randint(1, 101, 1)
-    if leave_calc <= chance_to_leave.get(name):
-        results += " " + name + " has left the gambling hall. "
-        filename = gambling_hall_directory
-        with open(filename, "wt") as fid:
-            name = "Nobody"
-            fid.write(name)
+        # Game logic
+        player_points = 0
+        npc_points = 0
 
-    # format the list into a single string
-    def format(var0, var1, var2, var3, var4, var5):
-        return f"{format_card(var0)}, {format_card(var1)}, {format_card(var2)}, {format_card(var3)}, {format_card(var4)}, and a {format_card(var5)}"
+        # Sets the card numbers up to be checked.
+        pcard0 = player_hand[0][0]
+        pcard1 = player_hand[1][0]
+        pcard2 = player_hand[2][0]
+        pcard3 = player_hand[3][0]
+        pcard4 = player_hand[4][0]
+        pcard5 = player_hand[5][0]
+        # ph stands for player hand.
+        ph = [pcard0, pcard1, pcard2, pcard3, pcard4, pcard5]
 
-    def format_card(card):
-        return f"{card[0]} of {card[1]}"
-    if player_points > 999 and npc_points > 999:
-        results = (f"**You got:** {format(*player_hand)} which has a four-of-a-kind!!.\n**{name} got:** {format(*npc_hand)} which has a four-of-a-kind!!. \n**You tied?!?!**")
-    elif player_points > 999:
-        results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
-    elif npc_points > 999:
-        results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
-    else:
-        results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+        ncard0 = npc_hand[0][0]
+        ncard1 = npc_hand[1][0]
+        ncard2 = npc_hand[2][0]
+        ncard3 = npc_hand[3][0]
+        ncard4 = npc_hand[4][0]
+        ncard5 = npc_hand[5][0]
+        # nh stands for npc hand.
+        nh = [ncard0, ncard1, ncard2, ncard3, ncard4, ncard5]
+
+        player_points += count_points(ph)
+        npc_points += count_points(nh)
+
+        if player_points > npc_points:
+            card_game_result = f"You win!"
+        elif npc_points > player_points:
+            card_game_result = f"{name} won!"
+        elif player_points == npc_points:
+            card_game_result = f"You tied!"
+        
+        leave_calc = np.random.randint(1, 101, 1)
+        if leave_calc <= chance_to_leave.get(name):
+            results += " " + name + " has left the gambling hall. "
+            filename = gambling_hall_directory
+            with open(filename, "wt") as fid:
+                name = "Nobody"
+                fid.write(name)
+
+        # format the list into a single string
+        def format(var0, var1, var2, var3, var4, var5):
+            return f"{format_card(var0)}, {format_card(var1)}, {format_card(var2)}, {format_card(var3)}, {format_card(var4)}, and a {format_card(var5)}"
+
+        def format_card(card):
+            return f"{card[0]} of {card[1]}"
+        if player_points > 999 and npc_points > 999:
+            results = (f"**You got:** {format(*player_hand)} which has a four-of-a-kind!!.\n**{name} got:** {format(*npc_hand)} which has a four-of-a-kind!!. \n**You tied?!?!**")
+        elif player_points > 999:
+            results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+        elif npc_points > 999:
+            results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+        else:
+            results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+        
+        if kanan_skill == True:
+            if name == "Xavier":
+                cheating = np.random.randint(1, 101, 1)
+                if cheating <= 7:
+                    result = "You caught Xavier cheating! He forfeits all his money for getting caught."
+                    result += " " + name + " has left the gambling hall. "
+                    filename = gambling_hall_directory
+                    with open(filename, "wt") as fid:
+                        name = "Nobody"
+                        fid.write(name)
+                        return result
+
+            # make a deck of cards
+            deck = list(
+                itertools.product(range(1, 14), ["Spades", "Hearts", "Diamonds", "Clubs"])
+            )
+            # Logic depending on the skill of the NPC skill
+            if gambling_hall_skill[name] == 0:
+
+                # shuffle the cards
+                shuffle_amount = np.random.randint(1, 51, 1)
+                count = 0
+                while count < shuffle_amount:
+                    random.shuffle(deck)
+                    count += 1
+                results = []
+                player_hand = []
+                player_hand = deal_kanan(deck)
+
+                # shuffle the cards
+                shuffle_amount = np.random.randint(1, 51, 1)
+                count = 0
+                while count < shuffle_amount:
+                    random.shuffle(deck)
+                    count += 1
+                results = []
+                npc_hand = []
+                npc_hand = deal0(deck)
+
+            if gambling_hall_skill[name] == 1:
+
+                # shuffle the cards
+                shuffle_amount = np.random.randint(1, 51, 1)
+                count = 0
+                while count < shuffle_amount:
+                    random.shuffle(deck)
+                    count += 1
+                results = []
+                player_hand = []
+                player_hand = deal_kanan(deck)
+
+                # shuffle the cards
+                shuffle_amount = np.random.randint(1, 51, 1)
+                count = 0
+                while count < shuffle_amount:
+                    random.shuffle(deck)
+                    count += 1
+                npc_hand = f"**{name} got:** \n"
+                results = []
+                npc_hand = []
+
+                # draw five cards for the npc
+                for i in range(6):
+                    npc_hand += [deck[i]]
+
+            # Logic depending on the skill of the NPC skill
+            if gambling_hall_skill[name] == 2:
+
+                # shuffle the cards
+                shuffle_amount = np.random.randint(1, 51, 1)
+                count = 0
+                while count < shuffle_amount:
+                    random.shuffle(deck)
+                    count += 1
+                results = []
+                player_hand = []
+                player_hand = deal_kanan(deck)
+
+                # shuffle the cards
+                shuffle_amount = np.random.randint(1, 51, 1)
+                count = 0
+                while count < shuffle_amount:
+                    random.shuffle(deck)
+                    count += 1
+                results = []
+                npc_hand = []
+                npc_hand = deal2(deck)
+
+            if gambling_hall_skill[name] == 3:
+
+                # shuffle the cards
+                shuffle_amount = np.random.randint(1, 51, 1)
+                count = 0
+                while count < shuffle_amount:
+                    random.shuffle(deck)
+                    count += 1
+                results = []
+                player_hand = []
+                player_hand = deal_kanan(deck)
+
+                # shuffle the cards
+                shuffle_amount = np.random.randint(1, 51, 1)
+                count = 0
+                while count < shuffle_amount:
+                    random.shuffle(deck)
+                    count += 1
+                results = []
+                npc_hand = []
+                npc_hand = deal3(deck)
+
+            # Game logic
+            player_points = 0
+            npc_points = 0
+
+            # Sets the card numbers up to be checked.
+            pcard0 = player_hand[0][0]
+            pcard1 = player_hand[1][0]
+            pcard2 = player_hand[2][0]
+            pcard3 = player_hand[3][0]
+            pcard4 = player_hand[4][0]
+            pcard5 = player_hand[5][0]
+            # ph stands for player hand.
+            ph = [pcard0, pcard1, pcard2, pcard3, pcard4, pcard5]
+
+            ncard0 = npc_hand[0][0]
+            ncard1 = npc_hand[1][0]
+            ncard2 = npc_hand[2][0]
+            ncard3 = npc_hand[3][0]
+            ncard4 = npc_hand[4][0]
+            ncard5 = npc_hand[5][0]
+            # nh stands for npc hand.
+            nh = [ncard0, ncard1, ncard2, ncard3, ncard4, ncard5]
+
+            player_points += count_points(ph)
+            npc_points += count_points(nh)
+
+            if player_points > npc_points:
+                card_game_result = f"You win!"
+            elif npc_points > player_points:
+                card_game_result = f"{name} won!"
+            elif player_points == npc_points:
+                card_game_result = f"You tied!"
+            
+            leave_calc = np.random.randint(1, 101, 1)
+            if leave_calc <= chance_to_leave.get(name):
+                results += " " + name + " has left the gambling hall. "
+                filename = gambling_hall_directory
+                with open(filename, "wt") as fid:
+                    name = "Nobody"
+                    fid.write(name)
+
+            # format the list into a single string
+            def format(var0, var1, var2, var3, var4, var5):
+                return f"{format_card(var0)}, {format_card(var1)}, {format_card(var2)}, {format_card(var3)}, {format_card(var4)}, and a {format_card(var5)}"
+
+            def format_card(card):
+                return f"{card[0]} of {card[1]}"
+            if player_points > 999 and npc_points > 999:
+                results = (f"**You got:** {format(*player_hand)} which has a four-of-a-kind!!.\n**{name} got:** {format(*npc_hand)} which has a four-of-a-kind!!. \n**You tied?!?!**")
+            elif player_points > 999:
+                results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+            elif npc_points > 999:
+                results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+            else:
+                results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
     return results
 
-print(card_game("Clyde"))
+
 
 def RPS_loss(choice):
     if choice == "rock":
@@ -738,29 +931,67 @@ def NPC_RPS_calc(chance, skill, choice, name):
     return result
 
 
-def RPS_game(name, choice):
-    skill = gambling_hall_skill[name]
-    if name == "Xavier":
-        cheating = np.random.randint(1, 101, 1)
-        if cheating <= 7:
-            result = "You caught Xavier cheating! He forfeits all his money for getting caught."
+def RPS_game(name, choice, kanan_skill):
+    if kanan_skill == False:
+        skill = gambling_hall_skill[name]
+        if name == "Xavier":
+            cheating = np.random.randint(1, 101, 1)
+            if cheating <= 7:
+                result = "You caught Xavier cheating! He forfeits all his money for getting caught."
+                result += " " + name + " has left the gambling hall. "
+                filename = gambling_hall_directory
+                with open(filename, "wt") as fid:
+                    name = "Nobody"
+                    fid.write(name)
+                return result
+        if skill == 0:
+            chance = np.random.randint(1, 101, 1)
+            result = NPC_RPS_calc(chance, skill, choice, name)
             return result
-    if skill == 0:
-        chance = np.random.randint(1, 101, 1)
-        result = NPC_RPS_calc(chance, skill, choice, name)
-        return result
-    if skill == 1:
-        chance = np.random.randint(1, 101, 1)
-        result = NPC_RPS_calc(chance, skill, choice, name)
-        return result
-    if skill == 2:
-        chance = np.random.randint(1, 101, 1)
-        result = NPC_RPS_calc(chance, skill, choice, name)
-        return result
-    if skill == 3:
-        chance = np.random.randint(1, 101, 1)
-        result = NPC_RPS_calc(chance, skill, choice, name)
-        return result
+        if skill == 1:
+            chance = np.random.randint(1, 101, 1)
+            result = NPC_RPS_calc(chance, skill, choice, name)
+            return result
+        if skill == 2:
+            chance = np.random.randint(1, 101, 1)
+            result = NPC_RPS_calc(chance, skill, choice, name)
+            return result
+        if skill == 3:
+            chance = np.random.randint(1, 101, 1)
+            result = NPC_RPS_calc(chance, skill, choice, name)
+            return result
+    elif kanan_skill == True:
+        skill = gambling_hall_skill[name]
+        if name == "Xavier":
+            cheating = np.random.randint(1, 101, 1)
+            if cheating <= 7:
+                result = "You caught Xavier cheating! He forfeits all his money for getting caught."
+                result += " " + name + " has left the gambling hall. "
+                filename = gambling_hall_directory
+                with open(filename, "wt") as fid:
+                    name = "Nobody"
+                    fid.write(name)
+                return result
+        if skill == 0:
+            chance = np.random.randint(1, 101, 1)
+            chance += 5
+            result = NPC_RPS_calc(chance, skill, choice, name)
+            return result
+        if skill == 1:
+            chance = np.random.randint(1, 101, 1)
+            chance += 5
+            result = NPC_RPS_calc(chance, skill, choice, name)
+            return result
+        if skill == 2:
+            chance = np.random.randint(1, 101, 1)
+            chance += 5
+            result = NPC_RPS_calc(chance, skill, choice, name)
+            return result
+        if skill == 3:
+            chance = np.random.randint(1, 101, 1)
+            chance += 5
+            result = NPC_RPS_calc(chance, skill, choice, name)
+            return result
 
 
 localtime = time.asctime(time.localtime(time.time()))
@@ -915,12 +1146,6 @@ async def on_message(message):
             await message.channel.send("Only Jay may use this feature.")
     if message.content.startswith("$rps "):
         print(localtime_call)
-        # filename='C:\\Users\\Raptor\\Desktop\\Discord Bot\\Gambling Hall\\ghall.txt'
-        # with open(filename, 'r') as fid:
-        #     name = list[1]
-        # if name == 'Nobody' or 'nobody':
-        #     await message.channel.send('Nobody is in the gambling hall right now, come back later.')
-        # else:
         filename = gambling_hall_directory
         with open(filename, "r+") as fid:
             for line in fid:
@@ -929,8 +1154,13 @@ async def on_message(message):
         choice = list[1]
         if name == "Nobody" or name == 'nobody':
             await message.channel.send("There's nobody in the gambling hall.")
-        else:
-            result = RPS_game(name, choice)
+        elif message.author.id != 796135159971446824:
+            kanan_skill = False
+            result = RPS_game(name, choice, kanan_skill)
+            await message.channel.send(result)
+        elif message.author.id == 796135159971446824:
+            kanan_skill = True
+            result = RPS_game(name, choice, kanan_skill)
             await message.channel.send(result)
     if message.content.startswith("$create "):
         print(localtime_call)
@@ -973,15 +1203,16 @@ async def on_message(message):
             for line in fid:
                 npc = line.split()
             name = npc[0]
-        if name == "Nobody":
+        if name == "Nobody" or name == "nobody":
             await message.channel.send("There's nobody in the gambling hall.")
-        else:
-            result = card_game(name)
+        elif message.author.id != 796135159971446824:
+            kanan_skill = False
+            result = card_game(name, kanan_skill)
             await message.channel.send(result)
-
-    if message.content.startswith("$test "):
-        print(localtime_call)
-        await message.channel.send(client.get_user(335453916051275778))
+        elif message.author.id == 796135159971446824:
+            kanan_skill = True
+            result = card_game(name, kanan_skill)
+            await message.channel.send(result)
 
 
 client.run(os.getenv('token'))
