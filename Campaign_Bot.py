@@ -423,7 +423,7 @@ def deal_kanan(deck):
         if exists_in_hand(hand, card):
             shuffle(deck)
             continue
-        
+
         if card[0] < 4 and count < 3:
             count += 1
             shuffle(deck)
@@ -1155,12 +1155,16 @@ async def on_message(message):
         if name == "Nobody" or name == 'nobody':
             await message.channel.send("There's nobody in the gambling hall.")
         elif message.author.id != 796135159971446824:
+            print(records)
             kanan_skill = False
             result = RPS_game(name, choice, kanan_skill)
+            print(result)
             await message.channel.send(result)
         elif message.author.id == 796135159971446824:
+            print(records)
             kanan_skill = True
             result = RPS_game(name, choice, kanan_skill)
+            print(result)
             await message.channel.send(result)
     if message.content.startswith("$create "):
         print(localtime_call)
@@ -1206,12 +1210,16 @@ async def on_message(message):
         if name == "Nobody" or name == "nobody":
             await message.channel.send("There's nobody in the gambling hall.")
         elif message.author.id != 796135159971446824:
+            print(records)
             kanan_skill = False
             result = card_game(name, kanan_skill)
+            print(result)
             await message.channel.send(result)
         elif message.author.id == 796135159971446824:
+            print(records)
             kanan_skill = True
             result = card_game(name, kanan_skill)
+            print(result)
             await message.channel.send(result)
 
 
