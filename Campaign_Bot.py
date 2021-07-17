@@ -304,6 +304,20 @@ def has_straight(hand, new_card):
             return True
     return False
 
+def has_four_of_a_kind(hand, new_card):
+    count_array: list[int] = [0] * 13
+    temp_hand = hand.copy()
+    temp_hand.append(new_card)
+    # Accumulate the possible of-a-kinds
+    for value in temp_hand:
+        count_array[value[0] - 1] += 1
+
+    # BEDMAS: brackets, exponents, divide, multiply, addition, subtraction
+    # Calculate and return the scores
+    for num in count_array:
+        if num > 3:
+            return True
+    return False
 
 # Creates the NPC's deck.
 def deal0(deck):
@@ -361,6 +375,7 @@ def deal3(deck):
     count = 0
     count2 = 0
     count3 = 0
+    count4 = 0
     rndm = np.random.randint(1, 50, 1)
     card = deck[0]
     hand.append(card)
@@ -371,25 +386,30 @@ def deal3(deck):
             shuffle(deck)
             continue
 
-        if card[0] < 8 and count < 23 and rndm <= 40:
+        if card[0] < 6 and count < 20:
             count += 1
             shuffle(deck)
             continue
 
-        if not has_pairs(hand, card) and count2 < 14 and rndm <= 40:
+        if not has_pairs(hand, card) and count2 < 14 and rndm <= 35:
             count2 += 1
             shuffle(deck)
             continue
 
-        if not has_straight(hand, card) and count3 < 31 and rndm > 40:
+        if not has_straight(hand, card) and count3 < 27 and rndm >35:
             count3 += 1
             shuffle(deck)
             continue
 
+        if len(hand) > 2 and has_four_of_a_kind(hand, card):
+            count4 += 1
+            shuffle(deck)
+            continue
+
+
         hand.append(card)
         shuffle(deck)
     return hand
-
 
 def scan_for_of_a_kind(hand_values) -> list[int]:
     count_array: list[int] = [0] * 13
@@ -408,6 +428,22 @@ def scan_for_of_a_kind(hand_values) -> list[int]:
         index += 1
 
     return score_array
+
+def scan_for_has_four_of_a_kind(hand_values, old_score) -> int:
+    count_array: list[int] = [0] * 13
+
+    # Accumulate the possible of-a-kinds
+    for value in hand_values:
+        count_array[value - 1] += 1
+
+    # BEDMAS: brackets, exponents, divide, multiply, addition, subtraction
+    # Calculate and return the scores
+    score = old_score
+    for num in count_array:
+        if num > 3:
+            score = 1000
+
+    return score
 
 
 def scan_for_straight(hand_values) -> int:
@@ -452,10 +488,18 @@ def count_points(hand) -> int:
     # Third, cound base points.
     total_score += sum(hand)
 
+    total_score = scan_for_has_four_of_a_kind(hand, total_score)
+
     return total_score
 
 
 def card_game(name):
+
+    if name == "Xavier":
+        cheating = np.random.randint(1, 101, 1)
+        if cheating <= 7:
+            result = "You caught Xavier cheating! He forfeits all his money for getting caught."
+            return result
 
     # make a deck of cards
     deck = list(
@@ -475,6 +519,7 @@ def card_game(name):
         player_hand = []
         for i in range(6):
             player_hand += [deck[i]]
+        deck = deck [ 6 : -1 : 1 ]
 
         # shuffle the cards
         shuffle_amount = np.random.randint(1, 51, 1)
@@ -499,6 +544,7 @@ def card_game(name):
         player_hand = []
         for i in range(6):
             player_hand += [deck[i]]
+            deck = deck [ 6 : -1 : 1 ]
 
         # shuffle the cards
         shuffle_amount = np.random.randint(1, 51, 1)
@@ -528,7 +574,7 @@ def card_game(name):
         player_hand = []
         for i in range(6):
             player_hand += [deck[i]]
-
+        deck = deck [ 6 : -1 : 1 ]
         # shuffle the cards
         shuffle_amount = np.random.randint(1, 51, 1)
         count = 0
@@ -552,6 +598,7 @@ def card_game(name):
         player_hand = []
         for i in range(6):
             player_hand += [deck[i]]
+        deck = deck [ 6 : -1 : 1 ]
 
         # shuffle the cards
         shuffle_amount = np.random.randint(1, 51, 1)
@@ -588,12 +635,21 @@ def card_game(name):
 
     player_points += count_points(ph)
     npc_points += count_points(nh)
+
     if player_points > npc_points:
         card_game_result = f"You win!"
     elif npc_points > player_points:
         card_game_result = f"{name} won!"
     elif player_points == npc_points:
         card_game_result = f"You tied!"
+    
+    leave_calc = np.random.randint(1, 101, 1)
+    if leave_calc <= chance_to_leave.get(name):
+        results += " " + name + " has left the gambling hall. "
+        filename = gambling_hall_directory
+        with open(filename, "wt") as fid:
+            name = "Nobody"
+            fid.write(name)
 
     # format the list into a single string
     def format(var0, var1, var2, var3, var4, var5):
@@ -601,7 +657,14 @@ def card_game(name):
 
     def format_card(card):
         return f"{card[0]} of {card[1]}"
-    results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+    if player_points > 999 and npc_points > 999:
+        results = (f"**You got:** {format(*player_hand)} which has a four-of-a-kind!!.\n**{name} got:** {format(*npc_hand)} which has a four-of-a-kind!!. \n**You tied?!?!**")
+    elif player_points > 999:
+        results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+    elif npc_points > 999:
+        results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+    else:
+        results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
     return results
 
 print(card_game("Clyde"))
@@ -921,7 +984,7 @@ async def on_message(message):
         await message.channel.send(client.get_user(335453916051275778))
 
 
-#client.run(os.getenv('token'))
+client.run(os.getenv('token'))
 
 
 # %%
