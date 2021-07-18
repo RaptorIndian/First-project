@@ -989,7 +989,38 @@ def RPS_game(name, choice, kanan_skill):
 localtime = time.asctime(time.localtime(time.time()))
 localtime_call = "Local current time : ", localtime
 
-
+def pull_tarot_card(player_name):
+    good_cards = [
+                    f"Lion: {player_name} gains +4 Lck and Skl. They also gain 1 movement.",
+                    f"Eagle: {player_name} gains +4 Spd and Int. They also are not hindered by forest tiles.",
+                    f"Bear: {player_name} gains +4 Str and Defense. They also can't be critically hit.",
+                    f"Dragon: {player_name} gains +4 Mag and Res. They also intimidate foes."
+    ]
+    neutral_cards = [
+                    f"Dagger: {player_name} gains a new weapon, but they lose a sum of gold for it.",
+                    f"Arrow: {player_name} gains a Forge Coin, but they lose 1 stamina for the week.",
+                    f"Flame: Nothing changes for {player_name}.",
+                    f"Flower: {player_name} gains a new statbooster, but will be cursed with bad luck in the next rp session."
+    ]
+    bad_cards = [
+                    f"Broken Bone: {player_name} loses 4 Def and Spd. They also lose 1 movement.",
+                    f"Serpent: {player_name} loses 4 Cha and Str. They also start the next map poisoned.",
+                    f"Target: {player_name} loses 20 Avoid. They also draw more aggro.",
+                    f"Devil: {player_name} is struck with a random curse."
+        ]
+    chance = np.random.randint(0, 12, 1)
+    if chance <= 4:
+        result = good_cards[(chance[0]) % 4]
+    if chance > 4 and chance <= 8:
+        result = neutral_cards[(chance[0]) % 4]
+    if chance > 8:
+        result = bad_cards[(chance[0]) % 4]
+    result += '\n<@335453916051275778>'
+    return result
+            
+            
+    
+    
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -1217,9 +1248,17 @@ async def on_message(message):
             result = card_game(name, kanan_skill)
             print(result)
             await message.channel.send(result)
-    if message.content == '$ping':
-        myid = '<@335453916051275778>'
-        await message.channel.send(myid)
+    if message.content.startswith("$tarot"):
+        name = str(list[1]).title()
+        print(localtime_call)
+        path = characters_directory
+        new_file = os.path.join(path, name + ".txt")
+        if os.path.isfile(new_file):
+            result = pull_tarot_card(name)
+            await message.channel.send(result)
+        if not os.path.isfile(new_file):
+            await message.channel.send("Please specify the character pulling the tarot card.")
+            
 
 
 client.run(os.getenv('token'))
