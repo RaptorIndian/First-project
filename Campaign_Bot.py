@@ -1016,6 +1016,7 @@ def pull_tarot_card(player_name):
     if chance > 8:
         result = bad_cards[(chance[0]) % 4]
     result += '\n<@335453916051275778>'
+    print(result)
     return result
             
             
