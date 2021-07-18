@@ -254,7 +254,7 @@ chance_to_leave = {
     "Alura": 5,
     "Jordan": 20,
     "Micka": 15,
-    "Cloe": 20,
+    "Cloe": 100,
     "Gron": 15,
     "Joey": 5,
     "Keith": 10,
@@ -591,7 +591,7 @@ def card_game(name, kanan_skill):
         if gambling_hall_skill[name] == 2:
 
             # shuffle the cards
-            shuffle_amount = np.random.randint(1, 51, 1)
+            shuffle_amount = np.random.randint(1, 3, 1)
             count = 0
             while count < shuffle_amount:
                 random.shuffle(deck)
@@ -669,14 +669,6 @@ def card_game(name, kanan_skill):
             card_game_result = f"{name} won!"
         elif player_points == npc_points:
             card_game_result = f"You tied!"
-        
-        leave_calc = np.random.randint(1, 101, 1)
-        if leave_calc <= chance_to_leave.get(name):
-            results += " " + name + " has left the gambling hall. "
-            filename = gambling_hall_directory
-            with open(filename, "wt") as fid:
-                name = "Nobody"
-                fid.write(name)
 
         # format the list into a single string
         def format(var0, var1, var2, var3, var4, var5):
@@ -835,14 +827,6 @@ def card_game(name, kanan_skill):
                 card_game_result = f"{name} won!"
             elif player_points == npc_points:
                 card_game_result = f"You tied!"
-            
-            leave_calc = np.random.randint(1, 101, 1)
-            if leave_calc <= chance_to_leave.get(name):
-                results += " " + name + " has left the gambling hall. "
-                filename = gambling_hall_directory
-                with open(filename, "wt") as fid:
-                    name = "Nobody"
-                    fid.write(name)
 
             # format the list into a single string
             def format(var0, var1, var2, var3, var4, var5):
@@ -858,6 +842,14 @@ def card_game(name, kanan_skill):
                 results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
             else:
                 results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+
+        leave_calc = np.random.randint(1, 101, 1)
+        if leave_calc <= chance_to_leave.get(name):
+            results += "\n" + name + " has left the gambling hall. <@335453916051275778>"
+            filename = gambling_hall_directory
+            with open(filename, "wt") as fid:
+                name = "Nobody"
+                fid.write(name)
     return results
 
 
@@ -923,7 +915,7 @@ def NPC_RPS_calc(chance, skill, choice, name):
             result = str(name + " chose " + RPS_tie(choice) + ". You tied!")
     leave_calc = np.random.randint(1, 101, 1)
     if leave_calc <= chance_to_leave.get(name):
-        result += " " + name + " has left the gambling hall. "
+        result += "\n" + name + " has left the gambling hall. <@335453916051275778>"
         filename = gambling_hall_directory
         with open(filename, "wt") as fid:
             name = "Nobody"
@@ -1155,12 +1147,14 @@ async def on_message(message):
         if name == "Nobody" or name == 'nobody':
             await message.channel.send("There's nobody in the gambling hall.")
         elif message.author.id != 796135159971446824:
+            records = [message.author.nick]
             print(records)
             kanan_skill = False
             result = RPS_game(name, choice, kanan_skill)
             print(result)
             await message.channel.send(result)
         elif message.author.id == 796135159971446824:
+            records = [message.author.nick]
             print(records)
             kanan_skill = True
             result = RPS_game(name, choice, kanan_skill)
@@ -1210,17 +1204,22 @@ async def on_message(message):
         if name == "Nobody" or name == "nobody":
             await message.channel.send("There's nobody in the gambling hall.")
         elif message.author.id != 796135159971446824:
+            records = [message.author.nick, name]
             print(records)
             kanan_skill = False
             result = card_game(name, kanan_skill)
             print(result)
             await message.channel.send(result)
         elif message.author.id == 796135159971446824:
+            records = [message.author.nick, name]
             print(records)
             kanan_skill = True
             result = card_game(name, kanan_skill)
             print(result)
             await message.channel.send(result)
+    if message.content == '$ping':
+        myid = '<@335453916051275778>'
+        await message.channel.send(myid)
 
 
 client.run(os.getenv('token'))
