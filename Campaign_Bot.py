@@ -1008,7 +1008,7 @@ def pull_tarot_card(player_name):
                     f"Target: {player_name} loses 20 Avoid. They also draw more aggro.",
                     f"Devil: {player_name} is struck with a random curse."
         ]
-    chance = np.random.randint(0, 12, 1)
+    chance = np.random.randint(1, 13, 1)
     if chance <= 4:
         result = good_cards[(chance[0]) % 4]
     if chance > 4 and chance <= 8:
