@@ -254,7 +254,7 @@ chance_to_leave = {
     "Alura": 5,
     "Jordan": 20,
     "Micka": 15,
-    "Cloe": 100,
+    "Cloe": 20,
     "Gron": 15,
     "Joey": 5,
     "Keith": 10,
@@ -1009,6 +1009,7 @@ def pull_tarot_card(player_name):
                     f"Devil: {player_name} is struck with a random curse."
         ]
     chance = np.random.randint(1, 13, 1)
+    # chance = np.random.randint(1, 13) returns a single integer, don't add size!
     if chance <= 4:
         result = good_cards[(chance[0]) % 4]
     if chance > 4 and chance <= 8:
