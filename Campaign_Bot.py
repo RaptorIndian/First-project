@@ -1267,6 +1267,7 @@ async def on_message(message):
     if message.content.startswith("$tarot"):
         name = str(list[1]).title()
         print(localtime_call)
+        print(message.author.nick)
         path = characters_directory
         new_file = os.path.join(path, name + ".txt")
         if os.path.isfile(new_file):
@@ -1276,17 +1277,30 @@ async def on_message(message):
             await message.channel.send("Please specify the character pulling the tarot card.")
     if message.content.startswith("$roll"): 
         print(localtime_call)
-        print(message.author.nick+" rolled dice.")
-        dice = re.findall(r'\d+', list[1])
-        if 'd' in list[1]:
-            try:
-                result = custom_dice_roll(int(dice[0]), int(dice[1]))
-                await message.channel.send(result)
-            except IndexError as err:
-                print(err)
+        try:
+            print(message.author.nick+" rolled dice.")
+            dice = re.findall(r'\d+', list[1])
+            if 'd' in list[1]:
+                try:
+                    result = custom_dice_roll(int(dice[0]), int(dice[1]))
+                    await message.channel.send(result)
+                except IndexError as err:
+                    print(err)
+                    await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
+            else:
                 await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
-        else:
-            await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
+        except TypeError:
+            dice = re.findall(r'\d+', list[1])
+            if 'd' in list[1]:
+                try:
+                    result = custom_dice_roll(int(dice[0]), int(dice[1]))
+                    await message.channel.send(result)
+                except IndexError as err:
+                    print(err)
+                    await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
+            else:
+                await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
+
 client.run(os.getenv('token'))
 
 
