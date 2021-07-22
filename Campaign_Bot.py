@@ -1019,10 +1019,24 @@ def pull_tarot_card(player_name):
     result += '\n<@335453916051275778>'
     print(result)
     return result
-            
-            
+
+
+def custom_dice_roll(num_of_dice, sides):
+    sides = sides + 1
+    count = 0
+    result = ''
+    if num_of_dice > 30:
+        result = 'You cannot roll more than 30 dice at once.'
+    elif sides > 10001:
+        result = 'You cannot roll a dice with more than 10,000 sides.'
+    else:
+        while count < num_of_dice:
+            result += f'{np.random.randint(1, sides)} \n'
+            count += 1
     
-    
+    return result
+
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -1260,9 +1274,19 @@ async def on_message(message):
             await message.channel.send(result)
         if not os.path.isfile(new_file):
             await message.channel.send("Please specify the character pulling the tarot card.")
-            
-
-
+    if message.content.startswith("$roll"): 
+        print(localtime_call)
+        print(message.author.nick+" rolled dice.")
+        dice = re.findall(r'\d+', list[1])
+        if 'd' in list[1]:
+            try:
+                result = custom_dice_roll(int(dice[0]), int(dice[1]))
+                await message.channel.send(result)
+            except IndexError as err:
+                print(err)
+                await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
+        else:
+            await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
 client.run(os.getenv('token'))
 
 
