@@ -249,14 +249,14 @@ gambling_hall_skill = {
 }
 
 chance_to_leave = {
-    "Clyde": 5,
+    "Clyde": 7,
     "Dale": 20,
-    "Alura": 7,
+    "Alura": 10,
     "Jordan": 20,
     "Micka": 15,
     "Cloe": 20,
     "Gron": 15,
-    "Joey": 5,
+    "Joey": 7,
     "Keith": 10,
     "Xavier": 10,
     "Myra": 15,
@@ -390,6 +390,13 @@ def deal3(deck):
             shuffle(deck)
             continue
 
+        if len(hand) < 2:
+            chance = np.random.randint(1, 3)
+            if chance == 1:
+                if card[0] > 9:
+                    shuffle(deck)
+                    continue
+
         if card[0] < 6 and count < 20:
             count += 1
             shuffle(deck)
@@ -424,7 +431,7 @@ def deal_kanan(deck):
             shuffle(deck)
             continue
 
-        if card[0] < 4 and count < 3:
+        if card[0] < 2 and count < 3:
             count += 1
             shuffle(deck)
             continue
@@ -924,7 +931,7 @@ def NPC_RPS_calc(chance, skill, choice, name):
 
 
 def RPS_game(name, choice, kanan_skill):
-    if kanan_skill == False:
+    if kanan_skill == 0:
         skill = gambling_hall_skill[name]
         if name == "Xavier":
             cheating = np.random.randint(1, 101, 1)
@@ -952,7 +959,7 @@ def RPS_game(name, choice, kanan_skill):
             chance = np.random.randint(1, 101, 1)
             result = NPC_RPS_calc(chance, skill, choice, name)
             return result
-    elif kanan_skill == True:
+    elif kanan_skill == 1:
         skill = gambling_hall_skill[name]
         if name == "Xavier":
             cheating = np.random.randint(1, 101, 1)
