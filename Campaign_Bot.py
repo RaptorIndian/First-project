@@ -516,7 +516,7 @@ def count_points(hand) -> int:
 
 
 def card_game(name, kanan_skill):
-    if kanan_skill == False:
+    if kanan_skill == 0:
         if name == "Xavier":
             cheating = np.random.randint(1, 101, 1)
             if cheating <= 7:
@@ -685,163 +685,163 @@ def card_game(name, kanan_skill):
         else:
             results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
         
-        if kanan_skill == True:
-            if name == "Xavier":
-                cheating = np.random.randint(1, 101, 1)
-                if cheating <= 7:
-                    result = "You caught Xavier cheating! He forfeits all his money for getting caught."
-                    result += " " + name + " has left the gambling hall. "
-                    filename = gambling_hall_directory
-                    with open(filename, "wt") as fid:
-                        name = "Nobody"
-                        fid.write(name)
-                        return result
+    if kanan_skill == 1:
+        if name == "Xavier":
+            cheating = np.random.randint(1, 101, 1)
+            if cheating <= 7:
+                result = "You caught Xavier cheating! He forfeits all his money for getting caught."
+                result += " " + name + " has left the gambling hall. "
+                filename = gambling_hall_directory
+                with open(filename, "wt") as fid:
+                    name = "Nobody"
+                    fid.write(name)
+                    return result
 
-            # make a deck of cards
-            deck = list(
-                itertools.product(range(1, 14), ["Spades", "Hearts", "Diamonds", "Clubs"])
-            )
-            # Logic depending on the skill of the NPC skill
-            if gambling_hall_skill[name] == 0:
+        # make a deck of cards
+        deck = list(
+            itertools.product(range(1, 14), ["Spades", "Hearts", "Diamonds", "Clubs"])
+        )
+        # Logic depending on the skill of the NPC skill
+        if gambling_hall_skill[name] == 0:
 
-                # shuffle the cards
-                shuffle_amount = np.random.randint(1, 51, 1)
-                count = 0
-                while count < shuffle_amount:
-                    random.shuffle(deck)
-                    count += 1
-                results = []
-                player_hand = []
-                player_hand = deal_kanan(deck)
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            results = []
+            player_hand = []
+            player_hand = deal_kanan(deck)
 
-                # shuffle the cards
-                shuffle_amount = np.random.randint(1, 51, 1)
-                count = 0
-                while count < shuffle_amount:
-                    random.shuffle(deck)
-                    count += 1
-                results = []
-                npc_hand = []
-                npc_hand = deal0(deck)
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            results = []
+            npc_hand = []
+            npc_hand = deal0(deck)
 
-            if gambling_hall_skill[name] == 1:
+        if gambling_hall_skill[name] == 1:
 
-                # shuffle the cards
-                shuffle_amount = np.random.randint(1, 51, 1)
-                count = 0
-                while count < shuffle_amount:
-                    random.shuffle(deck)
-                    count += 1
-                results = []
-                player_hand = []
-                player_hand = deal_kanan(deck)
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            results = []
+            player_hand = []
+            player_hand = deal_kanan(deck)
 
-                # shuffle the cards
-                shuffle_amount = np.random.randint(1, 51, 1)
-                count = 0
-                while count < shuffle_amount:
-                    random.shuffle(deck)
-                    count += 1
-                npc_hand = f"**{name} got:** \n"
-                results = []
-                npc_hand = []
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            npc_hand = f"**{name} got:** \n"
+            results = []
+            npc_hand = []
 
-                # draw five cards for the npc
-                for i in range(6):
-                    npc_hand += [deck[i]]
+            # draw five cards for the npc
+            for i in range(6):
+                npc_hand += [deck[i]]
 
-            # Logic depending on the skill of the NPC skill
-            if gambling_hall_skill[name] == 2:
+        # Logic depending on the skill of the NPC skill
+        if gambling_hall_skill[name] == 2:
 
-                # shuffle the cards
-                shuffle_amount = np.random.randint(1, 51, 1)
-                count = 0
-                while count < shuffle_amount:
-                    random.shuffle(deck)
-                    count += 1
-                results = []
-                player_hand = []
-                player_hand = deal_kanan(deck)
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            results = []
+            player_hand = []
+            player_hand = deal_kanan(deck)
 
-                # shuffle the cards
-                shuffle_amount = np.random.randint(1, 51, 1)
-                count = 0
-                while count < shuffle_amount:
-                    random.shuffle(deck)
-                    count += 1
-                results = []
-                npc_hand = []
-                npc_hand = deal2(deck)
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            results = []
+            npc_hand = []
+            npc_hand = deal2(deck)
 
-            if gambling_hall_skill[name] == 3:
+        if gambling_hall_skill[name] == 3:
 
-                # shuffle the cards
-                shuffle_amount = np.random.randint(1, 51, 1)
-                count = 0
-                while count < shuffle_amount:
-                    random.shuffle(deck)
-                    count += 1
-                results = []
-                player_hand = []
-                player_hand = deal_kanan(deck)
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            results = []
+            player_hand = []
+            player_hand = deal_kanan(deck)
 
-                # shuffle the cards
-                shuffle_amount = np.random.randint(1, 51, 1)
-                count = 0
-                while count < shuffle_amount:
-                    random.shuffle(deck)
-                    count += 1
-                results = []
-                npc_hand = []
-                npc_hand = deal3(deck)
+            # shuffle the cards
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            results = []
+            npc_hand = []
+            npc_hand = deal3(deck)
 
-            # Game logic
-            player_points = 0
-            npc_points = 0
+        # Game logic
+        player_points = 0
+        npc_points = 0
 
-            # Sets the card numbers up to be checked.
-            pcard0 = player_hand[0][0]
-            pcard1 = player_hand[1][0]
-            pcard2 = player_hand[2][0]
-            pcard3 = player_hand[3][0]
-            pcard4 = player_hand[4][0]
-            pcard5 = player_hand[5][0]
-            # ph stands for player hand.
-            ph = [pcard0, pcard1, pcard2, pcard3, pcard4, pcard5]
+        # Sets the card numbers up to be checked.
+        pcard0 = player_hand[0][0]
+        pcard1 = player_hand[1][0]
+        pcard2 = player_hand[2][0]
+        pcard3 = player_hand[3][0]
+        pcard4 = player_hand[4][0]
+        pcard5 = player_hand[5][0]
+        # ph stands for player hand.
+        ph = [pcard0, pcard1, pcard2, pcard3, pcard4, pcard5]
 
-            ncard0 = npc_hand[0][0]
-            ncard1 = npc_hand[1][0]
-            ncard2 = npc_hand[2][0]
-            ncard3 = npc_hand[3][0]
-            ncard4 = npc_hand[4][0]
-            ncard5 = npc_hand[5][0]
-            # nh stands for npc hand.
-            nh = [ncard0, ncard1, ncard2, ncard3, ncard4, ncard5]
+        ncard0 = npc_hand[0][0]
+        ncard1 = npc_hand[1][0]
+        ncard2 = npc_hand[2][0]
+        ncard3 = npc_hand[3][0]
+        ncard4 = npc_hand[4][0]
+        ncard5 = npc_hand[5][0]
+        # nh stands for npc hand.
+        nh = [ncard0, ncard1, ncard2, ncard3, ncard4, ncard5]
 
-            player_points += count_points(ph)
-            npc_points += count_points(nh)
+        player_points += count_points(ph)
+        npc_points += count_points(nh)
 
-            if player_points > npc_points:
-                card_game_result = f"You win!"
-            elif npc_points > player_points:
-                card_game_result = f"{name} won!"
-            elif player_points == npc_points:
-                card_game_result = f"You tied!"
+        if player_points > npc_points:
+            card_game_result = f"You win!"
+        elif npc_points > player_points:
+            card_game_result = f"{name} won!"
+        elif player_points == npc_points:
+            card_game_result = f"You tied!"
 
-            # format the list into a single string
-            def format(var0, var1, var2, var3, var4, var5):
-                return f"{format_card(var0)}, {format_card(var1)}, {format_card(var2)}, {format_card(var3)}, {format_card(var4)}, and a {format_card(var5)}"
+        # format the list into a single string
+        def format(var0, var1, var2, var3, var4, var5):
+            return f"{format_card(var0)}, {format_card(var1)}, {format_card(var2)}, {format_card(var3)}, {format_card(var4)}, and a {format_card(var5)}"
 
-            def format_card(card):
-                return f"{card[0]} of {card[1]}"
-            if player_points > 999 and npc_points > 999:
-                results = (f"**You got:** {format(*player_hand)} which has a four-of-a-kind!!.\n**{name} got:** {format(*npc_hand)} which has a four-of-a-kind!!. \n**You tied?!?!**")
-            elif player_points > 999:
-                results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
-            elif npc_points > 999:
-                results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
-            else:
-                results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+        def format_card(card):
+            return f"{card[0]} of {card[1]}"
+        if player_points > 999 and npc_points > 999:
+            results = (f"**You got:** {format(*player_hand)} which has a four-of-a-kind!!.\n**{name} got:** {format(*npc_hand)} which has a four-of-a-kind!!. \n**You tied?!?!**")
+        elif player_points > 999:
+            results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+        elif npc_points > 999:
+            results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+        else:
+            results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
 
         leave_calc = np.random.randint(1, 101, 1)
         if leave_calc <= chance_to_leave.get(name):
@@ -1254,14 +1254,14 @@ async def on_message(message):
         elif message.author.id != 796135159971446824:
             records = [message.author.nick, name]
             print(records)
-            kanan_skill = False
+            kanan_skill = 0
             result = card_game(name, kanan_skill)
             print(result)
             await message.channel.send(result)
         elif message.author.id == 796135159971446824:
             records = [message.author.nick, name]
             print(records)
-            kanan_skill = True
+            kanan_skill = 1
             result = card_game(name, kanan_skill)
             print(result)
             await message.channel.send(result)
