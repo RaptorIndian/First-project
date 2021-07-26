@@ -251,14 +251,14 @@ gambling_hall_skill = {
 chance_to_leave = {
     "Clyde": 5,
     "Dale": 20,
-    "Alura": 5,
+    "Alura": 7,
     "Jordan": 20,
     "Micka": 15,
     "Cloe": 20,
     "Gron": 15,
     "Joey": 5,
     "Keith": 10,
-    "Xavier": 1,
+    "Xavier": 10,
     "Myra": 15,
     "Nobody": 0,
     "nobody": 0
