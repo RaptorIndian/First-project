@@ -49,7 +49,7 @@ def comp(chance, growths):
         growths: Array-like of the same length as chance containing integers
     Returns:
         inc: A boolean list (True/False) where True means chance was lower
-             than growths
+            than growths
     """
     inc = []
     for pos, i in enumerate(
@@ -1011,15 +1011,16 @@ def pull_tarot_card(player_name):
     chance = np.random.randint(1, 13, 1)
     # chance = np.random.randint(1, 13) returns a single integer, don't add size!
     if chance <= 4:
-        result = good_cards[(chance[0]) % 4]
+        card_chance = np.random.randint(0, 4)
+        result = good_cards[card_chance]
     if chance > 4 and chance <= 8:
-        result = neutral_cards[(chance[0]) % 4]
+        card_chance = np.random.randint(0, 4)
+        result = neutral_cards[card_chance]
     if chance > 8:
-        result = bad_cards[(chance[0]) % 4]
+        card_chance = np.random.randint(0, 4)
+        result = bad_cards[card_chance]
     result += '\n<@335453916051275778>'
-    print(result)
     return result
-
 
 def custom_dice_roll(num_of_dice, sides):
     sides = sides + 1
