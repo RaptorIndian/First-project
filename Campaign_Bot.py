@@ -1025,6 +1025,8 @@ def pull_tarot_card(player_name):
         result = neutral_cards[card_chance]
     if chance > 8:
         card_chance = np.random.randint(0, 4)
+        if card_chance == 0:
+            card_chance = np.random.randint(0, 4)
         result = bad_cards[card_chance]
     result += '\n<@335453916051275778>'
     return result
