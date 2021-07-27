@@ -996,7 +996,10 @@ def RPS_game(name, choice, kanan_skill):
 localtime = time.asctime(time.localtime(time.time()))
 localtime_call = "Local current time : ", localtime
 
+tarot_memory = []
+
 def pull_tarot_card(player_name):
+    global tarot_memory
     good_cards = [
                     f"Lion: {player_name} gains +4 Lck and Skl. They also gain 1 movement.",
                     f"Eagle: {player_name} gains +4 Spd and Int. They also are not hindered by forest tiles.",
@@ -1019,16 +1022,31 @@ def pull_tarot_card(player_name):
     # chance = np.random.randint(1, 13) returns a single integer, don't add size!
     if chance <= 4:
         card_chance = np.random.randint(0, 4)
+        if card_chance == tarot_memory:
+            chance_to_get_same_card = np.random.randint(0,2)
+            if chance_to_get_same_card == 0:
+                card_chance = np.random.randint(0, 4)
         result = good_cards[card_chance]
     if chance > 4 and chance <= 8:
         card_chance = np.random.randint(0, 4)
+        if card_chance == tarot_memory:
+            chance_to_get_same_card = np.random.randint(0,2)
+            if chance_to_get_same_card == 0:
+                card_chance = np.random.randint(0, 4)
         result = neutral_cards[card_chance]
     if chance > 8:
         card_chance = np.random.randint(0, 4)
+        if card_chance == tarot_memory:
+            chance_to_get_same_card = np.random.randint(0,2)
+            if chance_to_get_same_card == 0:
+                card_chance = np.random.randint(0, 4)
         if card_chance == 0:
-            card_chance = np.random.randint(0, 4)
+            chance_to_get_broken_bone = np.random.randint(0,2)
+            if chance_to_get_broken_bone == 0:
+                card_chance = np.random.randint(0, 4)
         result = bad_cards[card_chance]
     result += '\n<@335453916051275778>'
+    tarot_memory = card_chance
     return result
 
 def custom_dice_roll(num_of_dice, sides):
@@ -1277,7 +1295,7 @@ async def on_message(message):
     if message.content.startswith("$tarot"):
         name = str(list[1]).title()
         print(localtime_call)
-        print(message.author.nick)
+        print(f'{message.author.nick} pulled a tarot card for {name}.')
         path = characters_directory
         new_file = os.path.join(path, name + ".txt")
         if os.path.isfile(new_file):
