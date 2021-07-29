@@ -187,17 +187,17 @@ async def on_message(message):
             await message.channel.send(f'What will you and {npc} start with, {user}? \n Tea, Crumpets, Napkins, Prayer, Greetings, Compliment, or let Them choose?')
     if message.content.startswith("$") and availability_memory == True:
         await message.channel.send(f"{npc} is currently having tea time with {user2}.")
-    if message.content.startswith("$$") and availability_memory == True and status == 2:
+    if message.content.startswith("$$") and availability_memory == True and status == 2 and message.author.nick == user2:
         npc_memory = list[0]
         availability_memory = False
         wait = 'No'
         user = ''
         await message.channel.send(f"{npc_preferences(npc_memory, 'topic', npc)} \n {npc_score_end_result(npc_score)}")
-    if message.content.startswith("$$") and availability_memory == True and status == 1:
+    if message.content.startswith("$$") and availability_memory == True and status == 1 and message.author.nick == user2:
         npc_memory = list[0]
         status = 2
         await message.channel.send(f"{npc_preferences(npc_memory, 'add', npc)} \nWhat will you talk about? \nFunny, Love, Responsibilities, Smalltalk, Silence, Gossip, or Hobbies?")
-    if message.content.startswith("$$") and availability_memory == True and status == 0:
+    if message.content.startswith("$$") and availability_memory == True and status == 0 and message.author.nick == user2:
         npc_memory = list[0]
         status = 1
         await message.channel.send(f"{npc_preferences(npc_memory, 'start', npc)} \nWill you add anything to the tea? \nSugar, Mint, Lemon, Elderberry, Apple, Chai, or drink Coffee instead?")
