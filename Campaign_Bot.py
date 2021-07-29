@@ -1149,8 +1149,12 @@ async def on_message(message):
         dev = client.get_user(234087004877357056)
         authorized = False
         if message.author.id in [234087004877357056, 335453916051275778]:
+            for character in message.content:
+                symbols = ['!', '@', '#', '%', '^', '&', '*', '(', ')', '-', '=', '_', '+', '`', '~'] 
+                if character in symbols:
+                    await message.channel.send("Don't use symbols!!")
             authorized = True
-            if authorized:
+            if authorized and character not in symbols:
                 name = list[1]
                 stat = list[2]
                 value = list[3]
