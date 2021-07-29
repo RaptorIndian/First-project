@@ -2,7 +2,7 @@ hp 50
 str 60
 mag 5
 skl 65
-spd 70
+spd 80
 lck 20
 def 35
 res 30
