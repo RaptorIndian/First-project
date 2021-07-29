@@ -7,6 +7,6 @@ lck 80
 def 10
 res 25
 con 10
-cha 5%
+cha 5
 int 40
 inv 5
