@@ -1,7 +1,7 @@
-Sugar: 0
-Mint: 5
-Lemon: 5
-Elderberry: 5
+Sugar: 1
+Mint: 2
+Lemon: 3
+Elderberry: 4
 Apple: 5
-Chai: 5
-Coffee: 5
+Chai: 6
+Coffee: 7

@@ -24,7 +24,7 @@ npc = ""
 npc_score = 0
 # Checks to see if Jay approved NPC.
 availability_memory = False
-# Makes sure you can't request tea time when someone is alreadu queue'd.
+# Makes sure you can't request tea time when someone is already queued.
 wait = 'No'
 # Stores the user id who requested tea time.
 user = ''
@@ -180,16 +180,17 @@ async def on_message(message):
     elif message.content.startswith("$tea ") and availability_memory == False and wait == 'Yes':
         await message.channel.send(f"{user2} is already waiting for a response.")
     if message.content.startswith("$no"):
-        if message.author.id in [335453916051275778]:
-            availability_memory = False
-            wait = 'No'
-            await message.channel.send(f"{npc} does not want to have tea right now.")
+        # if message.author.id in [335453916051275778]:
+        availability_memory = False
+        wait = 'No'
+        await message.channel.send(f"{npc} does not want to have tea right now.")
     if message.content.startswith("$yes"):
         # if message.author.id in [335453916051275778]:
         availability_memory = True
         await message.channel.send(f'What will you and {npc} start with, {user}? \n Tea, Crumpets, Napkins, Prayer, Greetings, Compliment, or let Them choose?')
     if message.content.startswith("$tea") and availability_memory == True:
         await message.channel.send(f"{npc} is currently having tea time with {user2}.")
+    # Stage 3
     if message.content.startswith("$$") and availability_memory == True and status == 2 and message.author.nick == user2:
         npc_memory = list[0]
         topic_choices = [
@@ -202,6 +203,7 @@ async def on_message(message):
             await message.channel.send(f"{npc_preferences(npc_memory, 'topic', npc)} \n {npc_score_end_result(npc_score)}")
         else:
             await message.channel.send("Please choose a proper option.")
+    # Stage 2
     if message.content.startswith("$$") and availability_memory == True and status == 1 and message.author.nick == user2:
         # Checks to make sure the item isn't depleted.
         npc_memory = list[0]
@@ -227,11 +229,25 @@ async def on_message(message):
                     check +=1
             number_of_item = int(item)
             if int(number_of_item) > 0:
+                ###########
+                # Open supplies file in read write mode.
+                # Access correct item.
+                # Subtract 1 from item quantity.
+                # Save update to supplies file.
+                fid = open(supplies_file).write().split()
+                separation = [2, 4, 6, 8, 10, 12]
+                count1 = 0
+                for item in fid:
+                    if str(npc_memory) == str(item):
+                        count1 += 1
+                    if count1 == 1:
+                        int(item) - 1
                 npc_memory = list[0]
                 status = 2
                 await message.channel.send(f"{npc_preferences(npc_memory, 'add', npc)} \nWhat will you talk about? \nFunny, Love, Responsibilities, Smalltalk, Silence, Gossip, or Hobbies?")
         else:
             await message.channel.send('Please choose a proper option.')
+    # Stage 1
     if message.content.startswith("$$") and availability_memory == True and status == 0 and message.author.nick == user2:
             start_choices = [
             '$$Tea', '$$Crumpets', '$$Napkins', '$$Prayer', '$$Greetings', '$$Compliment', '$$Them'
