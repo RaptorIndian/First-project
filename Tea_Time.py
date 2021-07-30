@@ -156,10 +156,13 @@ async def on_message(message):
     global status
     if message.author == client.user:
         return
+    # The command to check the remaining supplies.
+    supplies_file = "./Supplies/Supplies.txt"
+    opened = open(supplies_file).read().split()
     # Turn string into list of many strings based off the amount of spaces.
     list = message.content.split(" ")
     npcs_to_choose_from = [
-                            "Jay", "Clyde", "Dale", "Cloe", "Micka", "Keith", "Jordan", "Joey,"
+                            "Jay", "Clyde", "Dale", "Cloe", "Micka", "Keith", "Jordan", "Joey",
                             "Julie", "Trent", "April", "Myra", "Alura", "Fiona", "Ulric", "Mai",
                             "Coby", "Elroy", "Dain", "Katherine", "Gron", "Xavier", "Lilly",
                             "Zoku", "Ken", "Nicole"
@@ -182,24 +185,119 @@ async def on_message(message):
             wait = 'No'
             await message.channel.send(f"{npc} does not want to have tea right now.")
     if message.content.startswith("$yes"):
-        if message.author.id in [335453916051275778]:
-            availability_memory = True
-            await message.channel.send(f'What will you and {npc} start with, {user}? \n Tea, Crumpets, Napkins, Prayer, Greetings, Compliment, or let Them choose?')
-    if message.content.startswith("$") and availability_memory == True:
+        # if message.author.id in [335453916051275778]:
+        availability_memory = True
+        await message.channel.send(f'What will you and {npc} start with, {user}? \n Tea, Crumpets, Napkins, Prayer, Greetings, Compliment, or let Them choose?')
+    if message.content.startswith("$tea") and availability_memory == True:
         await message.channel.send(f"{npc} is currently having tea time with {user2}.")
     if message.content.startswith("$$") and availability_memory == True and status == 2 and message.author.nick == user2:
         npc_memory = list[0]
-        availability_memory = False
-        wait = 'No'
-        user = ''
-        await message.channel.send(f"{npc_preferences(npc_memory, 'topic', npc)} \n {npc_score_end_result(npc_score)}")
+        topic_choices = [
+            '$$Funny', '$$Love', '$$Responsibilities', '$$Smalltalk', '$$Silence', '$$Gossip', '$$Hobbies'
+        ]
+        if npc_memory in topic_choices:
+            availability_memory = False
+            wait = 'No'
+            user = ''
+            await message.channel.send(f"{npc_preferences(npc_memory, 'topic', npc)} \n {npc_score_end_result(npc_score)}")
+        else:
+            await message.channel.send("Please choose a proper option.")
     if message.content.startswith("$$") and availability_memory == True and status == 1 and message.author.nick == user2:
+        # Checks to make sure the item isn't depleted.
         npc_memory = list[0]
-        status = 2
-        await message.channel.send(f"{npc_preferences(npc_memory, 'add', npc)} \nWhat will you talk about? \nFunny, Love, Responsibilities, Smalltalk, Silence, Gossip, or Hobbies?")
+        add_choices = [
+            '$$Sugar', '$$Mint', '$$Lemon', '$$Elderberry', '$$Apple', '$$Chai', '$$Coffee'
+        ]
+        if npc_memory in add_choices:
+            npc_memory += ':'
+            check = 0
+            add_symbols = '$$'
+            for item in opened:
+                if check == 2:
+                    if int(item) == 0:
+                        check += 1
+                        await message.channel.send("You are out of that item.")
+                    else:
+                        break
+                if check == 0:
+                    add_symbols += item
+                    item = add_symbols
+                    check +=1
+                if str(item) == str(npc_memory):
+                    check +=1
+            number_of_item = int(item)
+            if int(number_of_item) > 0:
+                npc_memory = list[0]
+                status = 2
+                await message.channel.send(f"{npc_preferences(npc_memory, 'add', npc)} \nWhat will you talk about? \nFunny, Love, Responsibilities, Smalltalk, Silence, Gossip, or Hobbies?")
+        else:
+            await message.channel.send('Please choose a proper option.')
     if message.content.startswith("$$") and availability_memory == True and status == 0 and message.author.nick == user2:
-        npc_memory = list[0]
-        status = 1
-        await message.channel.send(f"{npc_preferences(npc_memory, 'start', npc)} \nWill you add anything to the tea? \nSugar, Mint, Lemon, Elderberry, Apple, Chai, or drink Coffee instead?")
-
+            start_choices = [
+            '$$Tea', '$$Crumpets', '$$Napkins', '$$Prayer', '$$Greetings', '$$Compliment', '$$Them'
+            ]
+            npc_memory = list[0]
+            if npc_memory in start_choices:
+                status = 1
+                await message.channel.send(f"{npc_preferences(npc_memory, 'start', npc)} \nWill you add anything to the tea? \nSugar, Mint, Lemon, Elderberry, Apple, Chai, or drink Coffee instead?")
+            else:
+                await message.channel.send("Please choose a proper option.")
+    if message.content.startswith("$supplies"):
+        result = ''
+        count = 0
+        separation = [2, 4, 6, 8, 10, 12]
+        for item in opened:
+            result += item
+            result += ' '
+            count += 1
+            if count in separation:
+                result += '\n'
+        await message.channel.send(result)
+    # The command to buy an item to replenish supplies.
+    if message.content.startswith("$buy"):
+        proper_item = str(list[1]).title() + ":"
+        improper_gold = ''
+        # Converts a number containing a comma to an integer.
+        for item in opened:
+            if item == proper_item:
+                gold = list[2]
+                for character in gold:
+                    if character == ',':
+                        pass
+                    else:
+                        improper_gold += character
+                try:
+                    int(improper_gold)
+                except:
+                    await message.channel.send("Please specify gold amount.")
+                # Tracks a separate instance of the number.
+                amount = improper_gold
+                if int(improper_gold) < 300:
+                    await message.channel.send("That is not enough gold.")
+                elif int(improper_gold) >= 300:
+                    amount = int(improper_gold) // 300
+                    plural = {
+                        "Sugar": "sugars", "Mint": "mint", "Lemon": "lemons",
+                        "Elderberry": "elderberries", "Apple": "apples",
+                        "Chai": "chai", "Coffee": "coffee"
+                    }
+                    if amount > 1:
+                        item_bought = list[1]
+                        plural_item = plural.get(str(item_bought).title())
+                        modulus = int(improper_gold) % 300
+                        modulus_formatted = int(modulus)
+                        if modulus == 0:
+                            result = f"You bought {amount} {plural_item}."
+                        elif modulus > 0:
+                            result = f"You bought {amount:,} {plural_item} and have {modulus_formatted} gold left."
+                        await message.channel.send(result)
+                    elif amount == 1:
+                        item_bought = list[1]
+                        modulus = int(improper_gold) % 300
+                        modulus_formatted = int(modulus)
+                        if modulus == 0:
+                            result = f"You bought {amount} {item_bought}"
+                        elif modulus > 0:
+                            result = f"You bought {amount:,} {item_bought} and have {modulus_formatted} gold left."
+                        await message.channel.send(result)
 client.run(os.getenv('token'))

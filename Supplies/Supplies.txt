@@ -1,0 +1,7 @@
+Sugar: 0
+Mint: 5
+Lemon: 5
+Elderberry: 5
+Apple: 5
+Chai: 5
+Coffee: 5
