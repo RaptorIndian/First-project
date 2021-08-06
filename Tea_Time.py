@@ -213,17 +213,21 @@ async def on_message(message):
         if npc_memory in add_choices:
             npc_memory += ':'
             check = 0
-            add_symbols = '$$'
+            place_in_list = 0
             for item in opened:
+                add_symbols = '$$'
+                place_in_list += 1
                 if check == 2:
                     if int(item) == 0:
                         check += 1
                         await message.channel.send("You are out of that item.")
                     else:
                         break
-                if check == 0:
+                names_only = [1,3,5,7,9,11,13]
+                if place_in_list in names_only and check != 3:
                     add_symbols += item
                     item = add_symbols
+                if check == 0:
                     check +=1
                 if str(item) == str(npc_memory):
                     check +=1
@@ -234,14 +238,35 @@ async def on_message(message):
                 # Access correct item.
                 # Subtract 1 from item quantity.
                 # Save update to supplies file.
-                fid = open(supplies_file).write().split()
-                separation = [2, 4, 6, 8, 10, 12]
-                count1 = 0
-                for item in fid:
-                    if str(npc_memory) == str(item):
-                        count1 += 1
-                    if count1 == 1:
-                        int(item) - 1
+                with open(supplies_file) as fid:
+                    file = fid.read().split()
+                    separation = [2, 4, 6, 8, 10, 12, 14, 16, 18 , 20]
+                    count1 = 0
+                    temp_npc_memory = npc_memory.replace('$', '')
+                    counting = -1
+                    for item in file:
+                        counting += 1
+                        if count1 == 1:
+                            count1 += 1
+                        if str(temp_npc_memory) == str(item):
+                            count1 += 1
+                        if count1 == 2:
+                            subtract = int(item) - 1
+                            break
+                    with open(supplies_file) as bleh:
+                        file = bleh.read().split()
+                        file[counting] = str(subtract)
+                        final_string = ''
+                        new_line = 0
+                        for item in file:
+                            new_line += 1
+                            final_string += item
+                            final_string += ' '
+                            if new_line in separation:
+                                final_string += '\n'
+                    with open(supplies_file, "w") as fin:
+                        fin.write(final_string)
+                        print(final_string)
                 npc_memory = list[0]
                 status = 2
                 await message.channel.send(f"{npc_preferences(npc_memory, 'add', npc)} \nWhat will you talk about? \nFunny, Love, Responsibilities, Smalltalk, Silence, Gossip, or Hobbies?")
