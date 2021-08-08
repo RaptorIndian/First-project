@@ -249,17 +249,17 @@ gambling_hall_skill = {
 }
 
 chance_to_leave = {
-    "Clyde": 7,
+    "Clyde": 17,
     "Dale": 20,
-    "Alura": 10,
-    "Jordan": 20,
-    "Micka": 15,
+    "Alura": 20,
+    "Jordan": 25,
+    "Micka": 25,
     "Cloe": 20,
-    "Gron": 15,
-    "Joey": 7,
-    "Keith": 10,
-    "Xavier": 10,
-    "Myra": 15,
+    "Gron": 25,
+    "Joey": 17,
+    "Keith": 25,
+    "Xavier": 20,
+    "Myra": 25,
     "Nobody": 0,
     "nobody": 0
 }
@@ -1064,274 +1064,273 @@ def custom_dice_roll(num_of_dice, sides):
     
     return result
 
-loop = True
-while loop == True:
-    @client.event
-    async def on_message(message):
-        if message.author == client.user:
-            return
-        list = message.content.split(
-            " "
-        )  # Turn string into list of many strings based off the amount of spaces
-        if message.content.startswith("$lvlup "):  # $lvlup Thor
-            print(localtime_call)
-            name = list[1]
-            records = [message.author.nick, name]
-            print(records)
-            growths = get_growths1(name)
-            enumerated_growths = []
-            for index, key in enumerate(growths.items()):
-                enumerated_growths.insert(index, key[1][0])
-            lvl = get_lvlup(enumerated_growths)
-            if not growths:  # If the player has typed the name wrong
-                await message.channel.send(
-                    "Error: Character not found!\nPlease ensure you have typed the name correctly and"
-                    " that the first letter is capitalized."
-                )
-            elif (
-                not lvl
-            ):  # Checks if the list is empty, designating a Null Level up and rerolling
-                count = 0
-                while not lvl and count < 6:
-                    channel = client.get_channel(847979864862883850)
-                    await channel.send(name + " got a Null Level up!\nRerolling ...\n")
-                    lvl = get_lvlup(enumerated_growths)
-                    count += 1
-                    if count > 5:
-                        lvl = ["nothing."]
-                        await message.channel.send(
-                            "Too many Null levels ups in a row. Wow you're unlucky!"
-                        )
-            await message.channel.send(
-                lvl[1] + "----------------\n" + name + " got " + ", ".join(lvl[0])
-            )
-        list = message.content.split(" ")
-        if message.content.startswith("$uncap "):
-            print(localtime_call)
-            admin = client.get_user(335453916051275778)
-            dev = client.get_user(234087004877357056)
-            authorized = False
-            if message.author.id in [234087004877357056, 335453916051275778]:
-                authorized = True
-            if authorized:
-                name = list[1]
-                stat = list[2]
-                cap = remove_cap(name, stat)
-                if cap:
-                    await message.channel.send(name + "'s " + stat + " has been uncapped.")
-                else:
-                    await message.channel.send(
-                        name + "'s " + stat + " is already uncapped."
-                    )
-            else:
-                await message.channel.send("Only Jay may use this feature.")
-        if message.content.startswith("$cap "):
-            print(localtime_call)
-            admin = client.get_user(335453916051275778)
-            dev = client.get_user(234087004877357056)
-            authorized = False
-            if message.author.id in [234087004877357056, 335453916051275778]:
-                authorized = True
-            if authorized:
-                name = list[1]
-                stat = list[2]
-                was_capped = cap_it(name, stat)
-                if was_capped:
-                    await message.channel.send(
-                        name + "'s " + stat.upper() + " is now capped."
-                    )
-                else:
-                    await message.channel.send("This stat is already capped")
-            else:
-                await message.channel.send("Only Jay may use this feature.")
-        if message.content.startswith("$update "):
-            print(localtime_call)
-            admin = client.get_user(335453916051275778)
-            dev = client.get_user(234087004877357056)
-            authorized = False
-            if message.author.id in [234087004877357056, 335453916051275778]:
-                for character in message.content:
-                    symbols = ['!', '@', '#', '%', '^', '&', '*', '(', ')', '-', '=', '_', '+', '`', '~'] 
-                    if character in symbols:
-                        await message.channel.send("Don't use symbols!!")
-                authorized = True
-                if authorized and character not in symbols:
-                    name = list[1]
-                    stat = list[2]
-                    value = list[3]
-                    update = update_growth(name, stat, value)
-                    if update:
-                        await message.channel.send(
-                            name
-                            + "'s "
-                            + stat.upper()
-                            + " has been updated to "
-                            + value
-                            + "."
-                        )
-            else:
-                await message.channel.send("Only Jay may use this feature.")
-        if message.content.startswith("$stats "):
-            print(localtime_call)
-            name = list[1]
-            growths = get_growths1(name)
-            variable = "**" + name + "'s" + " growths" ":" + "**" + "\n"
-            stats = [
-                "HP",
-                "STR",
-                "MAG",
-                "SKL",
-                "SPD",
-                "LCK",
-                "DEF",
-                "RES",
-                "CON",
-                "CHA",
-                "INT",
-                "INV",
-            ]
-            for key in stats:
-                line = key.upper() + ":"
-                val = growths[key]
-                for i in val:
-                    line = str(line + " " + str(i))
-                variable = variable + line + "\n"
-            records = [message.author.nick, name]
-            print(records)
-            print(variable)
-            await message.channel.send(variable)
-        if message.content.startswith("$inhall "):
-            print(localtime_call)
-            admin = client.get_user(335453916051275778)
-            dev = client.get_user(234087004877357056)
-            authorized = False
-            if message.author.id in [234087004877357056, 335453916051275778]:
-                authorized = True
-                if authorized:
-                    filename = gambling_hall_directory
-                    with open(filename, "wt") as fid:
-                        name = list[1]
-                        fid.write(name)
-                    # gambling = in_gambling_hall(name)
-                    await message.channel.send(name + " is now in the gambling hall.")
-            else:
-                await message.channel.send("Only Jay may use this feature.")
-        if message.content.startswith("$rps "):
-            print(localtime_call)
-            filename = gambling_hall_directory
-            with open(filename, "r+") as fid:
-                for line in fid:
-                    npc = line.split()
-                name = npc[0]
-            choice = list[1]
-            if name == "Nobody" or name == 'nobody':
-                await message.channel.send("There's nobody in the gambling hall.")
-            elif message.author.id != 796135159971446824:
-                records = [message.author.nick]
-                print(records)
-                kanan_skill = False
-                result = RPS_game(name, choice, kanan_skill)
-                print(result)
-                await message.channel.send(result)
-            elif message.author.id == 796135159971446824:
-                records = [message.author.nick]
-                print(records)
-                kanan_skill = True
-                result = RPS_game(name, choice, kanan_skill)
-                print(result)
-                await message.channel.send(result)
-        if message.content.startswith("$create "):
-            print(localtime_call)
-            admin = client.get_user(335453916051275778)
-            dev = client.get_user(234087004877357056)
-            authorized = False
-            if message.author.id in [234087004877357056, 335453916051275778]:
-                authorized = True
-                if authorized:
-                    name = str(list[1]).title()
-                    path = characters_directory
-                    new_file = os.path.join(path, name + ".txt")
-                    if os.path.isfile(new_file):
-                        await message.channel.send(name + " already exists.")
-                    else:
-                        with open(new_file, "wt") as fid:
-                            fid.write("")
-                        stats = [
-                            "HP",
-                            "STR",
-                            "MAG",
-                            "SKL",
-                            "SPD",
-                            "LCK",
-                            "DEF",
-                            "RES",
-                            "CON",
-                            "CHA",
-                            "INT",
-                            "INV",
-                        ]
-                        growths = {}
-                        for item in stats:
-                            growths[item] = [0]
-                        overwrite_char(name, growths)
-                        await message.channel.send(name + " has been created.")
-        if message.content.startswith("$cards"):
-            filename = gambling_hall_directory
-            with open(filename, "r+") as fid:
-                for line in fid:
-                    npc = line.split()
-                name = npc[0]
-            if name == "Nobody" or name == "nobody":
-                await message.channel.send("There's nobody in the gambling hall.")
-            elif message.author.id != 796135159971446824:
-                records = [message.author.nick, name]
-                print(records)
-                kanan_skill = 0
-                result = card_game(name, kanan_skill)
-                print(result)
-                await message.channel.send(result)
-            elif message.author.id == 796135159971446824:
-                records = [message.author.nick, name]
-                print(records)
-                kanan_skill = 1
-                result = card_game(name, kanan_skill)
-                print(result)
-                await message.channel.send(result)
-        if message.content.startswith("$tarot"):
-            name = str(list[1]).title()
-            print(localtime_call)
-            print(f'{message.author.nick} pulled a tarot card for {name}.')
-            path = characters_directory
-            new_file = os.path.join(path, name + ".txt")
-            if os.path.isfile(new_file):
-                result = pull_tarot_card(name)
-                await message.channel.send(result)
-            if not os.path.isfile(new_file):
-                await message.channel.send("Please specify the character pulling the tarot card.")
-        if message.content.startswith("$roll"): 
-            print(localtime_call)
-            try:
-                print(message.author.nick+" rolled dice.")
-                dice = re.findall(r'\d+', list[1])
-                if 'd' in list[1]:
-                    try:
-                        result = custom_dice_roll(int(dice[0]), int(dice[1]))
-                        await message.channel.send(result)
-                    except IndexError as err:
-                        print(err)
-                        await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
-                else:
-                    await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
-            except TypeError:
-                dice = re.findall(r'\d+', list[1])
-                if 'd' in list[1]:
-                    try:
-                        result = custom_dice_roll(int(dice[0]), int(dice[1]))
-                        await message.channel.send(result)
-                    except IndexError as err:
-                        print(err)
-                        await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
-                else:
-                    await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
 
-    client.run(os.getenv('token'))
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+    list = message.content.split(
+        " "
+    )  # Turn string into list of many strings based off the amount of spaces
+    if message.content.startswith("$lvlup "):  # $lvlup Thor
+        print(localtime_call)
+        name = list[1]
+        records = [message.author.nick, name]
+        print(records)
+        growths = get_growths1(name)
+        enumerated_growths = []
+        for index, key in enumerate(growths.items()):
+            enumerated_growths.insert(index, key[1][0])
+        lvl = get_lvlup(enumerated_growths)
+        if not growths:  # If the player has typed the name wrong
+            await message.channel.send(
+                "Error: Character not found!\nPlease ensure you have typed the name correctly and"
+                " that the first letter is capitalized."
+            )
+        elif (
+            not lvl
+        ):  # Checks if the list is empty, designating a Null Level up and rerolling
+            count = 0
+            while not lvl and count < 6:
+                channel = client.get_channel(847979864862883850)
+                await channel.send(name + " got a Null Level up!\nRerolling ...\n")
+                lvl = get_lvlup(enumerated_growths)
+                count += 1
+                if count > 5:
+                    lvl = ["nothing."]
+                    await message.channel.send(
+                        "Too many Null levels ups in a row. Wow you're unlucky!"
+                    )
+        await message.channel.send(
+            lvl[1] + "----------------\n" + name + " got " + ", ".join(lvl[0])
+        )
+    list = message.content.split(" ")
+    if message.content.startswith("$uncap "):
+        print(localtime_call)
+        admin = client.get_user(335453916051275778)
+        dev = client.get_user(234087004877357056)
+        authorized = False
+        if message.author.id in [234087004877357056, 335453916051275778]:
+            authorized = True
+        if authorized:
+            name = list[1]
+            stat = list[2]
+            cap = remove_cap(name, stat)
+            if cap:
+                await message.channel.send(name + "'s " + stat + " has been uncapped.")
+            else:
+                await message.channel.send(
+                    name + "'s " + stat + " is already uncapped."
+                )
+        else:
+            await message.channel.send("Only Jay may use this feature.")
+    if message.content.startswith("$cap "):
+        print(localtime_call)
+        admin = client.get_user(335453916051275778)
+        dev = client.get_user(234087004877357056)
+        authorized = False
+        if message.author.id in [234087004877357056, 335453916051275778]:
+            authorized = True
+        if authorized:
+            name = list[1]
+            stat = list[2]
+            was_capped = cap_it(name, stat)
+            if was_capped:
+                await message.channel.send(
+                    name + "'s " + stat.upper() + " is now capped."
+                )
+            else:
+                await message.channel.send("This stat is already capped")
+        else:
+            await message.channel.send("Only Jay may use this feature.")
+    if message.content.startswith("$update "):
+        print(localtime_call)
+        admin = client.get_user(335453916051275778)
+        dev = client.get_user(234087004877357056)
+        authorized = False
+        if message.author.id in [234087004877357056, 335453916051275778]:
+            for character in message.content:
+                symbols = ['!', '@', '#', '%', '^', '&', '*', '(', ')', '-', '=', '_', '+', '`', '~'] 
+                if character in symbols:
+                    await message.channel.send("Don't use symbols!!")
+            authorized = True
+            if authorized and character not in symbols:
+                name = list[1]
+                stat = list[2]
+                value = list[3]
+                update = update_growth(name, stat, value)
+                if update:
+                    await message.channel.send(
+                        name
+                        + "'s "
+                        + stat.upper()
+                        + " has been updated to "
+                        + value
+                        + "."
+                    )
+        else:
+            await message.channel.send("Only Jay may use this feature.")
+    if message.content.startswith("$stats "):
+        print(localtime_call)
+        name = list[1]
+        growths = get_growths1(name)
+        variable = "**" + name + "'s" + " growths" ":" + "**" + "\n"
+        stats = [
+            "HP",
+            "STR",
+            "MAG",
+            "SKL",
+            "SPD",
+            "LCK",
+            "DEF",
+            "RES",
+            "CON",
+            "CHA",
+            "INT",
+            "INV",
+        ]
+        for key in stats:
+            line = key.upper() + ":"
+            val = growths[key]
+            for i in val:
+                line = str(line + " " + str(i))
+            variable = variable + line + "\n"
+        records = [message.author.nick, name]
+        print(records)
+        print(variable)
+        await message.channel.send(variable)
+    if message.content.startswith("$inhall "):
+        print(localtime_call)
+        admin = client.get_user(335453916051275778)
+        dev = client.get_user(234087004877357056)
+        authorized = False
+        if message.author.id in [234087004877357056, 335453916051275778]:
+            authorized = True
+            if authorized:
+                filename = gambling_hall_directory
+                with open(filename, "wt") as fid:
+                    name = list[1]
+                    fid.write(name)
+                # gambling = in_gambling_hall(name)
+                await message.channel.send(name + " is now in the gambling hall.")
+        else:
+            await message.channel.send("Only Jay may use this feature.")
+    if message.content.startswith("$rps "):
+        print(localtime_call)
+        filename = gambling_hall_directory
+        with open(filename, "r+") as fid:
+            for line in fid:
+                npc = line.split()
+            name = npc[0]
+        choice = list[1]
+        if name == "Nobody" or name == 'nobody':
+            await message.channel.send("There's nobody in the gambling hall.")
+        elif message.author.id != 796135159971446824:
+            records = [message.author.nick]
+            print(records)
+            kanan_skill = False
+            result = RPS_game(name, choice, kanan_skill)
+            print(result)
+            await message.channel.send(result)
+        elif message.author.id == 796135159971446824:
+            records = [message.author.nick]
+            print(records)
+            kanan_skill = True
+            result = RPS_game(name, choice, kanan_skill)
+            print(result)
+            await message.channel.send(result)
+    if message.content.startswith("$create "):
+        print(localtime_call)
+        admin = client.get_user(335453916051275778)
+        dev = client.get_user(234087004877357056)
+        authorized = False
+        if message.author.id in [234087004877357056, 335453916051275778]:
+            authorized = True
+            if authorized:
+                name = str(list[1]).title()
+                path = characters_directory
+                new_file = os.path.join(path, name + ".txt")
+                if os.path.isfile(new_file):
+                    await message.channel.send(name + " already exists.")
+                else:
+                    with open(new_file, "wt") as fid:
+                        fid.write("")
+                    stats = [
+                        "HP",
+                        "STR",
+                        "MAG",
+                        "SKL",
+                        "SPD",
+                        "LCK",
+                        "DEF",
+                        "RES",
+                        "CON",
+                        "CHA",
+                        "INT",
+                        "INV",
+                    ]
+                    growths = {}
+                    for item in stats:
+                        growths[item] = [0]
+                    overwrite_char(name, growths)
+                    await message.channel.send(name + " has been created.")
+    if message.content.startswith("$cards"):
+        filename = gambling_hall_directory
+        with open(filename, "r+") as fid:
+            for line in fid:
+                npc = line.split()
+            name = npc[0]
+        if name == "Nobody" or name == "nobody":
+            await message.channel.send("There's nobody in the gambling hall.")
+        elif message.author.id != 796135159971446824:
+            records = [message.author.nick, name]
+            print(records)
+            kanan_skill = 0
+            result = card_game(name, kanan_skill)
+            print(result)
+            await message.channel.send(result)
+        elif message.author.id == 796135159971446824:
+            records = [message.author.nick, name]
+            print(records)
+            kanan_skill = 1
+            result = card_game(name, kanan_skill)
+            print(result)
+            await message.channel.send(result)
+    if message.content.startswith("$tarot"):
+        name = str(list[1]).title()
+        print(localtime_call)
+        print(f'{message.author.nick} pulled a tarot card for {name}.')
+        path = characters_directory
+        new_file = os.path.join(path, name + ".txt")
+        if os.path.isfile(new_file):
+            result = pull_tarot_card(name)
+            await message.channel.send(result)
+        if not os.path.isfile(new_file):
+            await message.channel.send("Please specify the character pulling the tarot card.")
+    if message.content.startswith("$roll"): 
+        print(localtime_call)
+        try:
+            print(message.author.nick+" rolled dice.")
+            dice = re.findall(r'\d+', list[1])
+            if 'd' in list[1]:
+                try:
+                    result = custom_dice_roll(int(dice[0]), int(dice[1]))
+                    await message.channel.send(result)
+                except IndexError as err:
+                    print(err)
+                    await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
+            else:
+                await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
+        except TypeError:
+            dice = re.findall(r'\d+', list[1])
+            if 'd' in list[1]:
+                try:
+                    result = custom_dice_roll(int(dice[0]), int(dice[1]))
+                    await message.channel.send(result)
+                except IndexError as err:
+                    print(err)
+                    await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
+            else:
+                await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
+
+client.run(os.getenv('token'))
