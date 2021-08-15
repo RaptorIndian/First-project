@@ -49,7 +49,7 @@ def npc_preferences(npc_memory, stage, npc):
                 "Conway": "$$Greetings", "Lilly": "$$Crumpets", "Zoku": "$$Tea",
                 "Ken": "$$Compliment", "Nicole": "$$Crumpets"
                 }
-        if npc_memory in start_preferences:
+        if npc_memory == start_preferences[npc]:
             local_npc_score += 1
             npc_score += 1
 
@@ -62,7 +62,7 @@ def npc_preferences(npc_memory, stage, npc):
             "Gron": "$$Prayer", " Xavier": "$$Prayer", "Conway": "Let $$Them Choose", "Lilly": "$$Prayer",
             "Zoku": "$$Crumpets", "Ken": "$$Prayer", "Nicole": "$$Napkins"
         }
-        if npc_memory in start_disinclinations:
+        if npc_memory == start_disinclinations[npc]:
             local_npc_score += -1
             npc_score += -1
     
@@ -77,7 +77,7 @@ def npc_preferences(npc_memory, stage, npc):
             "Xavier": "$$Sugar", "Conway": "$$Sugar", "Lilly": "$$Sugar", "Zoku": "$$Mint",
             "Ken": "$$Mint", "Nicole": "$$Elderberry"
         }
-        if npc_memory in add_preferences:
+        if npc_memory == add_preferences[npc]:
             local_npc_score += 1
             npc_score += 1
 
@@ -89,7 +89,7 @@ def npc_preferences(npc_memory, stage, npc):
             "Gron": "$$Sugar", "Xavier": "$$Apple", "Conway": "$$Mint", "Lilly": "$$Elderberry",
             "Zoku": "$$Elderberry", "Ken": "$$Coffee", "Nicole": "$$Mint"
         }
-        if npc_memory in add_disinclinations:
+        if npc_memory == add_disinclinations[npc]:
             local_npc_score += -1
             npc_score += -1
 
@@ -103,7 +103,7 @@ def npc_preferences(npc_memory, stage, npc):
             "Gron": "$$Gossip", "Xavier": "$$Funny", "Conway": "$$Hobbies", "Lilly": "$$Hobbies",
             "Zoku": "$$$$Smalltalk", "Ken": "$$Funny", "Nicole": "$$Silence"
         }
-        if npc_memory in topic_preferences:
+        if npc_memory == topic_preferences[npc]:
             local_npc_score += 1
             npc_score += 1
         
@@ -116,7 +116,7 @@ def npc_preferences(npc_memory, stage, npc):
             "Gron": "$$Hobbies", "Xavier": "$$Love", "Conway": "$$Silence", "Lilly": "$$$$Smalltalk",
             "Zoku": "$$Funny", "Ken": "$$Responsibilities", "Nicole": "$$Smalltalk"
         }
-        if npc_memory in topic_disinclinations:
+        if npc_memory == topic_disinclinations[npc]:
             local_npc_score += -1
             npc_score += -1
 
@@ -129,19 +129,19 @@ def npc_preferences(npc_memory, stage, npc):
 
 def npc_score_end_result(npc_score):
     if npc_score == 0:
-        result = f"{npc} thanked you for the tea, but they felt it was a tad uneventful. Total: 0 loyalty."
+        result = f"{npc} thanked you for the tea, but they felt it was a tad uneventful. \n**Total: 0 loyalty.**"
     if npc_score == 1:
-        result = f"{npc} liked the tea. Total: +1 loyalty!"
+        result = f"{npc} liked the tea. Total: \n**+1 loyalty!**"
     if npc_score == 2:
-        result = f"{npc} had a fun time today. Total: +2 loyalty!!"
+        result = f"{npc} had a fun time today. \n**Total: +2 loyalty!!**"
     if npc_score == 3: 
-        result = f"{npc} loved spending time with you Total: +3 loyalty!!!"
+        result = f"{npc} loved spending time with you Total: \n**+3 loyalty!!!**"
     if npc_score == -1:
-        result = f"{npc} politely thanked you but left in a hurry Total: -1 loyalty."
+        result = f"{npc} politely thanked you but left in a hurry Total: \n**-1 loyalty.**"
     if npc_score == -2:
-        result = f"{npc} seems put off by this exchange Total: -2 loyalty."
+        result = f"{npc} seems put off by this exchange Total: \n**-2 loyalty.**"
     if npc_score == -3:
-        result = f"{npc} made an excuse to leave early Total: -3 loyalty."
+        result = f"{npc} made an excuse to leave early Total: \n**-3 loyalty.**"
     return result
 
 @client.event
@@ -205,7 +205,7 @@ async def on_message(message):
         await message.channel.send(f"{npc} is currently having tea time with {user2}.")
     # Stage 3
     if message.content.startswith("$$") and availability_memory == True and status == 2 and message.author.nick == user2:
-        npc_memory = list[0]
+        npc_memory = str(list[0]).title()
         topic_choices = [
             '$$Funny', '$$Love', '$$Responsibilities', '$$Smalltalk', '$$Silence', '$$Gossip', '$$Hobbies'
         ]
@@ -229,47 +229,49 @@ async def on_message(message):
             npc_memory += ':'
             check = 0
             place_in_list = 0
-            for item in opened:
-                add_symbols = '$$'
-                place_in_list += 1
-                if check == 2:
-                    if int(item) == 0:
-                        check += 1
-                        item_gone = True
-                        await message.channel.send("You are out of that item.")
-                    else:
-                        break
-                names_only = [1,3,5,7,9,11,13]
-                if place_in_list in names_only and check != 3:
-                    add_symbols += item
-                    item = add_symbols
-                if check == 0:
-                    check +=1
-                if str(item) == str(npc_memory):
-                    check +=1
-            if item_gone == False:
-                number_of_item = int(item)
-                if int(number_of_item) > 0:
+            with open(supplies_file) as opened:
+                opened = opened.read().split()
+                for item in opened:
+                    add_symbols = '$$'
+                    place_in_list += 1
+                    if check == 2:
+                        if int(item) == 0:
+                            check += 1
+                            item_gone = True
+                            await message.channel.send("You are out of that item.")
+                        else:
+                            break
+                    names_only = [1,3,5,7,9,11,13]
+                    if place_in_list in names_only and check != 3:
+                        add_symbols += item
+                        item = add_symbols
+                    if check == 0:
+                        check +=1
+                    if str(item) == str(npc_memory):
+                        check +=1
+                if item_gone == False:
+                    number_of_item = int(item)
+                    if int(number_of_item) > 0:
                     ###########
                     # Open supplies file in write mode.
                     # Access correct item.
                     # Subtract 1 from item quantity.
                     # Save update to supplies file.
-                    with open(supplies_file) as fid:
-                        file = fid.read().split()
-                        separation = [2, 4, 6, 8, 10, 12, 14, 16, 18 , 20]
-                        count1 = 0
-                        temp_npc_memory = npc_memory.replace('$', '')
-                        counting = -1
-                        for item in file:
-                            counting += 1
-                            if count1 == 1:
-                                count1 += 1
-                            if str(temp_npc_memory) == str(item):
-                                count1 += 1
-                            if count1 == 2:
-                                subtract = int(item) - 1
-                                break
+                        with open(supplies_file) as fid:
+                            file = fid.read().split()
+                            separation = [2, 4, 6, 8, 10, 12, 14, 16, 18 , 20]
+                            count1 = 0
+                            temp_npc_memory = npc_memory.replace('$', '')
+                            counting = -1
+                            for item in file:
+                                counting += 1
+                                if count1 == 1:
+                                    count1 += 1
+                                if str(temp_npc_memory) == str(item):
+                                    count1 += 1
+                                if count1 == 2:
+                                    subtract = int(item) - 1
+                                    break
                         with open(supplies_file) as bleh:
                             file = bleh.read().split()
                             file[counting] = str(subtract)
@@ -297,6 +299,7 @@ async def on_message(message):
             npc_memory = str(list[0]).title()
             if npc_memory in start_choices:
                 status = 1
+                
                 await message.channel.send(f"{npc_preferences(npc_memory, 'start', npc)} \nWill you add anything to the tea? \nSugar, Mint, Lemon, Elderberry, Apple, Chai, or drink Coffee instead?")
             else:
                 await message.channel.send("Please choose something you can actually start with.")

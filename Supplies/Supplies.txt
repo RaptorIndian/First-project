@@ -1,5 +1,5 @@
 Sugar: 0 
-Mint: 0 
+Mint: 1 
 Lemon: 0 
 Elderberry: 0 
 Apple: 0 
