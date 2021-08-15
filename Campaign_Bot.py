@@ -320,12 +320,12 @@ def has_four_of_a_kind(hand, new_card):
     return False
 
 # Creates the NPC's deck.
-def deal0(deck):
+def deal0(deck, hand_size):
     hand = []
     count = 0
     count2 = 0
     count3 = 0
-    while len(hand) < 6:
+    while len(hand) < hand_size:
         card = deck[0]
         if card[0] > 9:
             if count3 < 3:
@@ -355,10 +355,10 @@ def deal0(deck):
     return hand
 
 
-def deal2(deck):
+def deal2(deck, hand_size):
     hand = []
     count = 0
-    while len(hand) < 6:
+    while len(hand) < hand_size:
         card = deck[0]
         if exists_in_hand(hand, card):
             shuffle(deck)
@@ -374,7 +374,7 @@ def deal2(deck):
     return hand
 
 
-def deal3(deck):
+def deal3(deck, hand_size):
     hand = []
     count = 0
     count2 = 0
@@ -384,7 +384,7 @@ def deal3(deck):
     card = deck[0]
     hand.append(card)
     shuffle(deck)
-    while len(hand) < 6:
+    while len(hand) < hand_size:
         card = deck[0]
         if exists_in_hand(hand, card):
             shuffle(deck)
@@ -422,10 +422,10 @@ def deal3(deck):
         shuffle(deck)
     return hand
 
-def deal_kanan(deck):
+def deal_kanan(deck, hand_size):
     hand = []
     count = 0
-    while len(hand) < 6:
+    while len(hand) < hand_size:
         card = deck[0]
         if exists_in_hand(hand, card):
             shuffle(deck)
@@ -563,7 +563,7 @@ def card_game(name, kanan_skill):
                 count += 1
             results = []
             npc_hand = []
-            npc_hand = deal0(deck)
+            npc_hand = deal0(deck, 6)
 
         if gambling_hall_skill[name] == 1:
 
@@ -617,7 +617,7 @@ def card_game(name, kanan_skill):
                 count += 1
             results = []
             npc_hand = []
-            npc_hand = deal2(deck)
+            npc_hand = deal2(deck, 6)
 
         if gambling_hall_skill[name] == 3:
 
@@ -642,7 +642,7 @@ def card_game(name, kanan_skill):
                 count += 1
             results = []
             npc_hand = []
-            npc_hand = deal3(deck)
+            npc_hand = deal3(deck, 6)
 
         # Game logic
         player_points = 0
@@ -680,18 +680,32 @@ def card_game(name, kanan_skill):
         # format the list into a single string
         def format(var0, var1, var2, var3, var4, var5):
             return f"{format_card(var0)}, {format_card(var1)}, {format_card(var2)}, {format_card(var3)}, {format_card(var4)}, and a {format_card(var5)}"
-
+        
+        # Change 1 11 12 and 13 to Ace Jack Queen King.
         def format_card(card):
-            return f"{card[0]} of {card[1]}"
+            if card[0] == 1:
+                return f"{'Ace'} of {card[1]}"
+            if card[0] == 11:
+                return f"{'Jack'} of {card[1]}"
+            if card[0] == 12:
+                return f"{'Queen'} of {card[1]}"
+            if card[0] == 13:
+                return f"{'King'} of {card[1]}"
+            else:
+                return f"{card[0]} of {card[1]}"
+        
         if player_points > 999 and npc_points > 999:
             results = (f"**You got:** {format(*player_hand)} which has a four-of-a-kind!!.\n**{name} got:** {format(*npc_hand)} which has a four-of-a-kind!!. \n**You tied?!?!**")
+            return results
         elif player_points > 999:
             results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+            return results
         elif npc_points > 999:
             results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
+            return results
         else:
             results = (f"**You got:** {format(*player_hand)} which adds up to **{player_points}**.\n**{name} got:** {format(*npc_hand)} which adds up to **{npc_points}**. \n**{card_game_result}**")
-        
+            return results
     if kanan_skill == 1:
         if name == "Xavier":
             cheating = np.random.randint(1, 101, 1)
@@ -719,7 +733,7 @@ def card_game(name, kanan_skill):
                 count += 1
             results = []
             player_hand = []
-            player_hand = deal_kanan(deck)
+            player_hand = deal_kanan(deck, 6)
 
             # shuffle the cards
             shuffle_amount = np.random.randint(1, 51, 1)
@@ -729,7 +743,7 @@ def card_game(name, kanan_skill):
                 count += 1
             results = []
             npc_hand = []
-            npc_hand = deal0(deck)
+            npc_hand = deal0(deck, 6)
 
         if gambling_hall_skill[name] == 1:
 
@@ -741,7 +755,7 @@ def card_game(name, kanan_skill):
                 count += 1
             results = []
             player_hand = []
-            player_hand = deal_kanan(deck)
+            player_hand = deal_kanan(deck, 6)
 
             # shuffle the cards
             shuffle_amount = np.random.randint(1, 51, 1)
@@ -768,7 +782,7 @@ def card_game(name, kanan_skill):
                 count += 1
             results = []
             player_hand = []
-            player_hand = deal_kanan(deck)
+            player_hand = deal_kanan(deck, 6)
 
             # shuffle the cards
             shuffle_amount = np.random.randint(1, 51, 1)
@@ -778,7 +792,7 @@ def card_game(name, kanan_skill):
                 count += 1
             results = []
             npc_hand = []
-            npc_hand = deal2(deck)
+            npc_hand = deal2(deck, 6)
 
         if gambling_hall_skill[name] == 3:
 
@@ -790,7 +804,7 @@ def card_game(name, kanan_skill):
                 count += 1
             results = []
             player_hand = []
-            player_hand = deal_kanan(deck)
+            player_hand = deal_kanan(deck, 6)
 
             # shuffle the cards
             shuffle_amount = np.random.randint(1, 51, 1)
@@ -800,7 +814,7 @@ def card_game(name, kanan_skill):
                 count += 1
             results = []
             npc_hand = []
-            npc_hand = deal3(deck)
+            npc_hand = deal3(deck, 6)
 
         # Game logic
         player_points = 0
@@ -992,7 +1006,6 @@ def RPS_game(name, choice, kanan_skill):
             result = NPC_RPS_calc(chance, skill, choice, name)
             return result
 
-
 localtime = time.asctime(time.localtime(time.time()))
 localtime_call = "Local current time : ", localtime
 
@@ -1064,6 +1077,80 @@ def custom_dice_roll(num_of_dice, sides):
     
     return result
 
+
+# The go fish card game.
+def go_fish(npc, kanan_skill, player_name):
+    # Determine who goes first.
+    who_goes_first = np.random.randint(0,1)
+    if who_goes_first == 0:
+        if kanan_skill == 0:
+            # Make a deck of cards
+            deck = list(
+                itertools.product(range(1, 14), ["Spades", "Hearts", "Diamonds", "Clubs"])
+            )
+            shuffle(deck)
+            # Shuffle the cards a lot.
+            shuffle_amount = np.random.randint(1, 51, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            if gambling_hall_skill[npc] == 0:
+                # Deal the NPC's hand.
+                npc_hand = deal0(deck, 7)
+                # Draw 7 cards for the player's hand.
+                player_hand = []
+                for i in range(7):
+                    player_hand += [deck[i]]
+                deck = deck [ 7 : -1 : 1 ]
+                random_card = np.random.randint(0,7)
+                # NPC picks a random card from its deck to ask for. 
+                npc_card_pick = npc_hand[random_card][0]
+                # Checks to see if the player has the card.
+                for number, suite in player_hand:
+                    if npc_card_pick == number:
+                        pick_result = f"{player_name}: Yes, here you go. Do you have a..."
+                        break
+                    else:
+                        pick_result = f"{player_name}: No, go fish!"
+######################################################################################################################################################
+                # Remove every instance of the card the NPC has picked from the player's hand.
+                npc_hand.pop(random_card)
+                
+                
+                    # Format the list into a single string
+                def format(var0, var1, var2, var3, var4, var5, var6):
+                    return f"{format_card(var0)}, {format_card(var1)}, {format_card(var2)}, {format_card(var3)}, {format_card(var4)}, {format_card(var5)}, and a {format_card(var6)}"
+                
+                # Change 1 11 12 and 13 to Ace Jack Queen King.
+                def format_card(card):
+                    if card[0] == 1:
+                        return f"{'Ace'} of {card[1]}"
+                    if card[0] == 11:
+                        return f"{'Jack'} of {card[1]}"
+                    if card[0] == 12:
+                        return f"{'Queen'} of {card[1]}"
+                    if card[0] == 13:
+                        return f"{'King'} of {card[1]}"
+                    else:
+                        return f"{card[0]} of {card[1]}"
+                # Change 1 11 12 and 13 to Ace Jack Queen King, but for the NPC's card pick.
+                def special_formatting(card):
+                    if card == 1:
+                        return 'Ace'
+                    if card == 11:
+                        return 'Jack'
+                    if card == 12:
+                        return 'Queen'
+                    if card == 13:
+                        return 'King'
+                    else:
+                        return card
+                # Puts together the end string to be sent to Discord.
+                results = (f"After a coin was fliped to decide, {npc} will go first.\n\n**Your hand:**\n{format(*player_hand)}.\n\n{npc}: Do you have any {special_formatting(npc_card_pick)}'s?\n{pick_result}")
+                return results
+
+print(go_fish('Dale',0, 'Thor'))
 
 @client.event
 async def on_message(message):
@@ -1332,5 +1419,16 @@ async def on_message(message):
                     await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
             else:
                 await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
-
-client.run(os.getenv('token'))
+    if message.content.startswith('$gofish'):
+        player = str(list[1]).title()
+        person_playing_go_fish = message.author.nick
+        filename = gambling_hall_directory
+        with open(filename, "r+") as fid:
+            for line in fid:
+                npc = line.split()
+            name = npc[0]
+        if name == "Nobody" or name == "nobody":
+            await message.channel.send("There's nobody in the gambling hall.")
+        elif message.author.id != 796135159971446824:
+            await message.channel.send(go_fish(name, 0, player))
+#client.run(os.getenv('token'))
