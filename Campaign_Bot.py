@@ -280,6 +280,11 @@ def shuffle(deck):
         random.shuffle(deck)
         count += 1
 
+# def shuffle(deck):
+#     # shuffle the cards
+#     shuffle_amount = np.random.randint(1, 51)
+#     for _ in range(shuffle_amount):
+#         random.shuffle(deck)
 
 # Makes sure you can't get multiple of the same card.
 def exists_in_hand(hand, new_card):
@@ -1080,75 +1085,128 @@ def custom_dice_roll(num_of_dice, sides):
 
 # The go fish card game.
 def go_fish(npc, kanan_skill, player_name):
+    # Change 1 11 12 and 13 to Ace Jack Queen King.
+    def format_card(card):
+        if card[0] == 1:
+            return f"{'Ace'} of {card[1]}"
+        if card[0] == 11:
+            return f"{'Jack'} of {card[1]}"
+        if card[0] == 12:
+            return f"{'Queen'} of {card[1]}"
+        if card[0] == 13:
+            return f"{'King'} of {card[1]}"
+        else:
+            return f"{card[0]} of {card[1]}"
+    # Change 1 11 12 and 13 to Ace Jack Queen King, but for the NPC's card pick.
+    def special_formatting(card):
+        if card == 1:
+            return 'Aces'
+        if card == 11:
+            return 'Jacks'
+        if card == 12:
+            return 'Queens'
+        if card == 13:
+            return 'Kings'
+        else:
+            return str(card) + "'s"
+    
     # Determine who goes first.
     who_goes_first = np.random.randint(0,1)
     if who_goes_first == 0:
+        # Checks for Kanan skill.
         if kanan_skill == 0:
-            # Make a deck of cards
+            # Makes a deck of cards.
             deck = list(
                 itertools.product(range(1, 14), ["Spades", "Hearts", "Diamonds", "Clubs"])
             )
             shuffle(deck)
             # Shuffle the cards a lot.
-            shuffle_amount = np.random.randint(1, 51, 1)
+            shuffle_amount = np.random.randint(1, 31, 1)
             count = 0
             while count < shuffle_amount:
                 random.shuffle(deck)
                 count += 1
+            # Draw 7 cards for the NPC's hand.
+            npc_hand = []
+            for i in range(7):
+                npc_hand += [deck[i]]
+            deck = deck [ 7 : -1 : 1 ]
+            # Organize NPC's hand.
+            npc_hand = sorted(npc_hand)
+            # Shuffle the cards a lot.
+            shuffle_amount = np.random.randint(1, 31, 1)
+            count = 0
+            while count < shuffle_amount:
+                random.shuffle(deck)
+                count += 1
+            # Draw 7 cards for the player's hand.
+            player_hand = []
+            for i in range(7):
+                player_hand += [deck[i]]
+            deck = deck [ 7 : -1 : 1 ]
+            # Organize player's hand.
+            player_hand = sorted(player_hand)
+            old_player_hand = sorted(player_hand)
+            # NPC picks a random card from its deck to ask for.
+            # Checks the skill level of the NPC.
             if gambling_hall_skill[npc] == 0:
-                # Deal the NPC's hand.
-                npc_hand = deal0(deck, 7)
-                # Draw 7 cards for the player's hand.
-                player_hand = []
-                for i in range(7):
-                    player_hand += [deck[i]]
-                deck = deck [ 7 : -1 : 1 ]
-                random_card = np.random.randint(0,7)
-                # NPC picks a random card from its deck to ask for. 
-                npc_card_pick = npc_hand[random_card][0]
-                # Checks to see if the player has the card.
-                for number, suite in player_hand:
-                    if npc_card_pick == number:
-                        pick_result = f"{player_name}: Yes, here you go. Do you have a..."
+                #chance = np.random.randint(0,101)
+                chance = 19
+                if chance <= 20:
+                    count = 0
+                    temp_list1 = []
+                    temp_list2 = []
+                    while count < 10:
+                        random_card = np.random.randint(0,7)
+                        for card in player_hand:
+                            temp_list1.append(card[0])
+                        for card in npc_hand:
+                            temp_list2.append(card[0])
+                        if npc_hand[random_card][0] in temp_list1 and chance in temp_list2:
+                            npc_card_pick = npc_hand[random_card][0]
+                            count = 11
+                        else:
+                            npc_card_pick = npc_hand[random_card][0]
+                            count += 1
+                elif chance > 20:
+                    random_card = np.random.randint(0,7)
+                    npc_card_pick = npc_hand[random_card][0]
+            # Checks to see if the player has the card.
+            for number, suite in player_hand:
+                if npc_card_pick == number:
+                    pick_result = f"{player_name}: Yes, here you go. Do you have a..."
+                    pick = True
+                    break
+                else:
+                    pick_result = f"{player_name}: No, go fish!"
+                    pick = False
+            if pick == False:
+                npc_hand += [deck[i]]
+            # Remove every instance of the card the NPC has picked from the player's hand.
+            filtered_hand = list(filter(lambda card: card[0] != npc_card_pick, player_hand))
+            player_hand = filtered_hand
+            # Format the list into a single string
+            def format(player_hand):
+                result = ''
+                count = -1
+                len_of_hand_minus_one = len(player_hand) - 2
+                for item in player_hand:
+                    count += 1
+                    result += f"{format_card(item)}, "
+                    if count == len_of_hand_minus_one:
                         break
-                    else:
-                        pick_result = f"{player_name}: No, go fish!"
-######################################################################################################################################################
-                # Remove every instance of the card the NPC has picked from the player's hand.
-                npc_hand.pop(random_card)
-                
-                
-                    # Format the list into a single string
-                def format(var0, var1, var2, var3, var4, var5, var6):
-                    return f"{format_card(var0)}, {format_card(var1)}, {format_card(var2)}, {format_card(var3)}, {format_card(var4)}, {format_card(var5)}, and a {format_card(var6)}"
-                
-                # Change 1 11 12 and 13 to Ace Jack Queen King.
-                def format_card(card):
-                    if card[0] == 1:
-                        return f"{'Ace'} of {card[1]}"
-                    if card[0] == 11:
-                        return f"{'Jack'} of {card[1]}"
-                    if card[0] == 12:
-                        return f"{'Queen'} of {card[1]}"
-                    if card[0] == 13:
-                        return f"{'King'} of {card[1]}"
-                    else:
-                        return f"{card[0]} of {card[1]}"
-                # Change 1 11 12 and 13 to Ace Jack Queen King, but for the NPC's card pick.
-                def special_formatting(card):
-                    if card == 1:
-                        return 'Ace'
-                    if card == 11:
-                        return 'Jack'
-                    if card == 12:
-                        return 'Queen'
-                    if card == 13:
-                        return 'King'
-                    else:
-                        return card
-                # Puts together the end string to be sent to Discord.
-                results = (f"After a coin was fliped to decide, {npc} will go first.\n\n**Your hand:**\n{format(*player_hand)}.\n\n{npc}: Do you have any {special_formatting(npc_card_pick)}'s?\n{pick_result}")
-                return results
+                final_index = count + 1
+                result += f"and a {format_card(player_hand[final_index])}. "
+                return result
+            if gambling_hall_skill[npc] == 1:
+                pass
+            print(npc_hand)
+            # Puts together the end string to be sent to Discord.
+            if pick == True: 
+                results = (f"**{player_name}'s old hand:**\n{format(old_player_hand)}\n\nAfter a coin was flipped to decide, {npc} will go first.\n{npc}: Do you have any {special_formatting(npc_card_pick)}?\n{pick_result}\n\n**{player_name}'s current hand:**\n{format(player_hand)}")
+            elif pick == False:
+                results = (f"**{player_name}'s hand:**\n{format(player_hand)}\n\nAfter a coin was flipped to decide, {npc} will go first.\n{npc}: Do you have any {special_formatting(npc_card_pick)}?\n{pick_result}")
+            return results
 
 print(go_fish('Dale',0, 'Thor'))
 
@@ -1420,15 +1478,18 @@ async def on_message(message):
             else:
                 await message.channel.send("Incorrect usage of command. Example: $roll 1d100")
     if message.content.startswith('$gofish'):
-        player = str(list[1]).title()
-        person_playing_go_fish = message.author.nick
-        filename = gambling_hall_directory
-        with open(filename, "r+") as fid:
-            for line in fid:
-                npc = line.split()
-            name = npc[0]
-        if name == "Nobody" or name == "nobody":
-            await message.channel.send("There's nobody in the gambling hall.")
-        elif message.author.id != 796135159971446824:
-            await message.channel.send(go_fish(name, 0, player))
+        try:
+            player = str(list[1]).title()
+            person_playing_go_fish = message.author.nick
+            filename = gambling_hall_directory
+            with open(filename, "r+") as fid:
+                for line in fid:
+                    npc = line.split()
+                name = npc[0]
+            if name == "Nobody" or name == "nobody":
+                await message.channel.send("There's nobody in the gambling hall.")
+            elif message.author.id != 796135159971446824:
+                await message.channel.send(go_fish(name, 0, player))
+        except IndexError:
+            await message.channel.send("Incorrect usage of command.")
 #client.run(os.getenv('token'))
